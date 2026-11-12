@@ -369,7 +369,7 @@ function SceneContents({ dark }: { dark: boolean }) {
       <pointLight position={[6, 3, -2]} intensity={22} distance={20} color={TP3D.cyan} />
       <pointLight position={[0, -3, 4]} intensity={12} distance={16} color={TP3D.pink} />
 
-      {/* Mascot + portals form the "two routes" composition */}
+      {/* Mascot + portals form the "two paths" composition */}
       <Twinny position={[0, 0.7, 0.4]} />
       <Portal variant="pump" position={[-3.4, 1.15, -1.2]} scale={0.95} />
       <Portal variant="launchlab" position={[3.4, 1.35, -1.4]} scale={1.02} />

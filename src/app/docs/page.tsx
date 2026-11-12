@@ -25,11 +25,11 @@ export default function DocsPage() {
         </p>
       </header>
 
-      <Section id="routes" title="Two Ways to Launch. One Place to Build.">
+      <Section id="routes" title="Two Paths, One Home.">
         <p>
-          TwinPad brings two established Solana launch mechanisms into one seamless experience. You
-          choose your launch path when creating a token; the choice determines the bonding-curve
-          program, fees, and where the token graduates:
+          TwinPad puts two of Solana&apos;s launch mechanisms under one roof. The path you
+          pick when creating a token decides which bonding-curve program it uses, what
+          fees apply, and where it lands after graduation:
         </p>
         <ul className="space-y-2">
           <li className="flex items-start gap-2">

@@ -76,7 +76,7 @@ export function LatestPanel({ full = false }: { full?: boolean }) {
       ) : tokens.length === 0 ? (
         <PanelEmpty
           message="No launches recorded yet."
-          hint="Be the first: choose your launch path and create a token on devnet."
+          hint="Be the first — pick a path and mint your token on devnet."
         />
       ) : (
         <ul>

@@ -190,7 +190,7 @@ export function RouteSelector({
               </span>
             </span>
             <Badge tone={route.id === "pump" ? "mint" : "ice"}>
-              {route.id === "pump" ? "Route 01 · Pump.fun" : "Route 02 · Raydium LaunchLab"}
+              {route.id === "pump" ? "Path 01 · Pump.fun" : "Path 02 · Raydium LaunchLab"}
             </Badge>
             <h3 className="mt-3 font-display text-base font-bold text-ink">{route.label}</h3>
             <div id={`route-availability-${route.id}`} className="mt-2 flex-1">

@@ -1,9 +1,9 @@
 "use client";
 
 /**
- * LaunchPortals — the two TwinPad launch routes as collectible portals.
+ * LaunchPortals — TwinPad's two launch destinations as collectible portals.
  *
- * Route 01 — Pump.fun (bonding curve → PumpSwap) and Route 02 — Raydium
+ * Path 01 — Pump.fun (bonding curve → PumpSwap) and Path 02 — Raydium
  * LaunchLab (bonding curve → CPMM). Each portal is an independent protocol:
  * TwinPad builds the route's real transaction and is NOT affiliated with
  * either protocol — the disclaimer line below stays on the page.
@@ -34,10 +34,10 @@ export const TWINPAD_PORTALS: PortalSpec[] = [
     route: "pump",
     index: "01",
     title: "Pump.fun",
-    protocol: "Route 01 · Pump.fun",
+    protocol: "Path 01 · Pump.fun",
     destination: "Bonding curve → PumpSwap",
     blurb:
-      "Launch on the pump.fun bonding curve (Token-2022, 6 decimals). Liquidity migrates to PumpSwap when the curve completes.",
+      "Start your token on Pump.fun's bonding curve — 6 decimals, instant trading, and liquidity that moves to PumpSwap on its own when the curve fills.",
     cta: "Launch on Pump.fun",
     ring: "from-cyan-400 via-teal-300 to-emerald-400",
     wash: "from-cyan-50 via-white to-teal-50 dark:from-cyan-500/10 dark:via-transparent dark:to-teal-500/10",
@@ -48,10 +48,10 @@ export const TWINPAD_PORTALS: PortalSpec[] = [
     route: "launchlab",
     index: "02",
     title: "Raydium LaunchLab",
-    protocol: "Route 02 · Raydium LaunchLab",
+    protocol: "Path 02 · Raydium LaunchLab",
     destination: "Bonding curve → Raydium CPMM",
     blurb:
-      "Create through Raydium LaunchLab's bonding curve. After the funding threshold, the launch graduates into a Raydium CPMM pool.",
+      "Build your launch on Raydium LaunchLab. Hit the funding goal and your token graduates straight into a Raydium CPMM pool.",
     cta: "Launch on LaunchLab",
     ring: "from-violet-500 via-fuchsia-400 to-pink-400",
     wash: "from-violet-50 via-white to-pink-50 dark:from-violet-500/10 dark:via-transparent dark:to-pink-500/10",
@@ -114,7 +114,7 @@ export function LaunchPortalCard({ spec, compact = false }: { spec: PortalSpec; 
 
 export function LaunchPortals({ compact = false }: { compact?: boolean }) {
   return (
-    <section aria-label="Launch routes" className="grid gap-4 sm:grid-cols-2">
+    <section aria-label="Launch destinations" className="grid gap-4 sm:grid-cols-2">
       {TWINPAD_PORTALS.map((spec) => (
         <LaunchPortalCard key={spec.route} spec={spec} compact={compact} />
       ))}

@@ -2,7 +2,7 @@
  * TwinPad brand marks — original inline-SVG artwork, no image dependencies.
  *
  * The TwinMark is a gradient squircle with two mirrored rockets leaving
- * orbit trails (the "two routes" story); the wordmark is typography so it
+ * orbit trails (the "two paths" story); the wordmark is typography so it
  * stays crisp at any size and in any theme. Server-safe: renders identically
  * in the topbar, sidebar and drawer.
  */

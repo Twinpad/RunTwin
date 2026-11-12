@@ -125,11 +125,11 @@ export function LaunchMarket({ initialFilter = "all" }: { initialFilter?: Filter
         </div>
       ) : tokens.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-night-600 bg-paper/60 px-6 py-14 text-center">
-          <p className="font-display text-lg font-bold text-ink">No launches match this view</p>
+          <p className="font-display text-lg font-bold text-ink">Nothing matches this view</p>
           <p className="mx-auto mt-1 max-w-md text-sm text-night-400">
             {q.trim()
               ? "Try a different name, ticker, mint or creator address."
-              : "Launches recorded through TwinPad appear here with verified lifecycle data."}
+              : "Launches show up here the moment they're recorded through TwinPad — with their full lifecycle attached."}
           </p>
         </div>
       ) : (

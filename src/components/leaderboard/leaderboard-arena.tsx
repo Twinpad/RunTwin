@@ -123,9 +123,9 @@ function CreatorBoard({ metric, limit }: { metric: "launches" | "active" | "grad
   if (rows.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-night-600 bg-paper/60 px-6 py-10 text-center">
-        <p className="font-display text-base font-bold text-ink">No creator data yet</p>
+        <p className="font-display text-base font-bold text-ink">No creators on the board yet</p>
         <p className="mx-auto mt-1 max-w-md text-sm text-night-400">
-          Rankings appear once creators record launches through TwinPad.
+          Podium spots open up as soon as launches are recorded through TwinPad.
         </p>
       </div>
     );
@@ -224,9 +224,9 @@ function TokenBoard({ tab }: { tab: TrendingTab }) {
   if (rows.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-night-600 bg-paper/60 px-6 py-10 text-center">
-        <p className="font-display text-base font-bold text-ink">No tokens in this board yet</p>
+        <p className="font-display text-base font-bold text-ink">This board is waiting for its first trade</p>
         <p className="mx-auto mt-1 max-w-md text-sm text-night-400">
-          Built from real trades as they happen — nothing is simulated or backfilled.
+          Built from live activity only — nothing here is simulated or backfilled.
         </p>
       </div>
     );

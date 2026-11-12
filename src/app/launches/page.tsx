@@ -16,8 +16,8 @@ export default async function LaunchesPage({
     <div className="animate-fade-up">
       <SectionHeading
         eyebrow="Launch marketplace"
-        title="Latest Launches"
-        description="The newest tokens launched through TwinPad's two routes — Pump.fun and Raydium LaunchLab — with verified lifecycle state from the launch registry. TwinPad launches appear here first."
+        title="Fresh Launches"
+        description="Straight from TwinPad's two destinations — tokens born on Pump.fun and Raydium LaunchLab, each tracked with its verified lifecycle from the launch registry."
         icon="rocket"
       />
       <LaunchMarket initialFilter={initialFilter as "all" | "graduated" | "pump" | "launchlab"} />

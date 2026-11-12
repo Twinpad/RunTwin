@@ -290,10 +290,10 @@ export function LiveTicker() {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-mint-400 opacity-60" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-mint-500" />
           </span>
-          Live launch activity
+          Live activity
         </span>
         <Link href="/live" className="text-2xs font-bold text-mint-500 hover:underline">
-          Open the universe →
+          Step inside →
         </Link>
       </div>
       {events === null ? (
@@ -304,7 +304,7 @@ export function LiveTicker() {
         </div>
       ) : events.length === 0 ? (
         <p className="px-1 py-3 text-sm text-night-400">
-          No launch events recorded yet — activity appears as creators launch through TwinPad.
+          No launches recorded yet — the grid lights up as soon as creators start launching through TwinPad.
         </p>
       ) : (
         <ul className="flex snap-x gap-2 overflow-x-auto pb-1 [scrollbar-width:thin]">
@@ -390,7 +390,7 @@ export function LeaderboardTeaser() {
         </div>
       ) : rows.length === 0 ? (
         <p className="px-1 py-3 text-sm text-night-400">
-          No creator rankings yet — they appear once launches are recorded through TwinPad.
+          No creator rankings yet — the podium fills up as launches roll in.
         </p>
       ) : (
         <ol className="grid grid-cols-3 gap-2">
@@ -503,7 +503,7 @@ export function LatestLaunchesPreview() {
             <div className="col-span-full rounded-3xl border border-dashed border-night-600 bg-paper/60 px-6 py-12 text-center">
               <p className="font-display text-lg font-bold text-ink">No launches yet</p>
               <p className="mx-auto mt-1 max-w-md text-sm text-night-400">
-                Be the first — choose a route and launch your token into the TwinPad universe.
+                Be the first — pick a path and send your token into the TwinPad universe.
               </p>
               <Link
                 href="/create"

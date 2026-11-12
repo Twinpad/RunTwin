@@ -169,14 +169,14 @@ export function PulseWall() {
         <h2 className="inline-flex items-center gap-2 font-display text-lg font-extrabold text-ink">
           <Icon name="zap" size={17} className="text-mint-500" />
           Market pulse
-          <span className="text-2xs font-medium text-night-500">top movers by live buy pressure</span>
+          <span className="text-2xs font-medium text-night-500">who&apos;s moving, right now</span>
         </h2>
         <ConnPill conn={conn} stale={stale} />
       </div>
       {stale && (
         <p className="mb-3 rounded-xl border border-warn/30 bg-warn/10 px-3 py-2 text-2xs text-warn">
-          The live stream has not delivered a fresh snapshot in the last 20 seconds — showing the last
-          verified state while the backend reconnects. This is not live data right now.
+          The stream hasn&apos;t delivered a fresh snapshot in over 20 seconds — what you see is the last
+          verified state while the backend reconnects. We&apos;d rather say that than pretend it&apos;s live.
         </p>
       )}
       {rows.length === 0 ? (
@@ -262,10 +262,10 @@ export function LaunchTimeline() {
         <h2 className="inline-flex items-center gap-2 font-display text-lg font-extrabold text-ink">
           <Icon name="rocket" size={17} className="text-mint-500" />
           Launch timeline
-          <span className="text-2xs font-medium text-night-500">verified registry lifecycle events</span>
+          <span className="text-2xs font-medium text-night-500">every step, logged on-chain</span>
         </h2>
         <Link href="/launches" className="text-2xs font-bold text-mint-500 hover:underline">
-          Launch marketplace →
+          Fresh launches →
         </Link>
       </div>
       {error ? (
@@ -285,7 +285,7 @@ export function LaunchTimeline() {
         <div className="rounded-2xl border border-dashed border-night-600 bg-paper/60 px-6 py-10 text-center">
           <p className="font-display text-base font-bold text-ink">No launch events yet</p>
           <p className="mx-auto mt-1 max-w-md text-sm text-night-400">
-            Events appear when creators prepare, submit, and confirm launches through TwinPad.
+            The timeline starts moving the moment someone prepares, signs, or confirms a launch through TwinPad.
           </p>
         </div>
       ) : (
@@ -358,11 +358,11 @@ export function NewPairsStrip() {
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h2 className="inline-flex items-center gap-2 font-display text-lg font-extrabold text-ink">
           <Icon name="layers" size={17} className="text-mint-500" />
-          New trading pairs
-          <span className="text-2xs font-medium text-night-500">verified on-chain pools</span>
+          New pairs, just verified
+          <span className="text-2xs font-medium text-night-500">straight from the chain</span>
         </h2>
         <Link href="/tokens" className="text-2xs font-bold text-mint-500 hover:underline">
-          Explore all →
+          Explore everything →
         </Link>
       </div>
       {tokens === null ? (
@@ -373,7 +373,7 @@ export function NewPairsStrip() {
         </div>
       ) : tokens.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-night-600 bg-paper/60 px-4 py-6 text-center text-sm text-night-400">
-          No new verified pools yet — they appear here once graduation is confirmed on-chain.
+          No verified pools yet — new pairs land here the moment graduation checks out on-chain.
         </p>
       ) : (
         <ul className="flex snap-x gap-2 overflow-x-auto pb-1 [scrollbar-width:thin]">

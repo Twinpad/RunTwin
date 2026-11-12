@@ -19,10 +19,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <footer className="mb-24 hidden px-4 pb-4 md:mb-2 md:block">
           <div className="rounded-2xl bg-gradient-to-r from-[#4C1D95] via-[#7C3AED] to-[#06B6D4] px-4 py-4 text-center shadow-glow-mint">
             <p className="font-display text-sm font-extrabold text-white">
-              TwinPad — One Launchpad. Two Routes.
+              TwinPad — One Platform. Two Ways to Launch.
             </p>
             <p className="mt-1 text-2xs text-white/75">
-              Fun to explore. Powerful to launch. Launches involve risk; verify every transaction before signing.
+              Come for the colors, stay for the launches. Tokens are risky business — read before you sign.
             </p>
           </div>
         </footer>

@@ -16,9 +16,9 @@ export default async function ExplorePage({
           <span className="ml-2 inline-flex h-1.5 w-1.5 translate-y-[-2px] rounded-full bg-mint-500 align-middle animate-pulse-soft" aria-hidden title="Live" />
         </h1>
         <p className="mt-0.5 text-2xs text-night-500">
-          Live discovery across Pump.fun curves &amp; PumpSwap pools, Raydium LaunchLab &amp;
-          CPMM, and verified TwinPad launches. Metrics shown only when verified —
-          otherwise N/A.
+          One feed for the whole ecosystem: Pump.fun curves &&apos; PumpSwap pools, Raydium
+          LaunchLab &&apos; CPMM, plus verified TwinPad launches. Numbers appear only
+          when they can be verified. Otherwise you will see N/A.
         </p>
       </header>
       <ExplorePanel initialSearch={params.creator ?? params.q ?? ""} />

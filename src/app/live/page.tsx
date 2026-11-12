@@ -9,7 +9,7 @@ export default function LivePage() {
       <SectionHeading
         eyebrow="Live universe"
         title="Live Market Universe"
-        description="Real activity as it happens: the market pulse streams live buy/sell pressure through TwinPad's backend, the launch timeline tracks every verified lifecycle event, and new pools appear the moment they are confirmed on-chain."
+        description="Watch TwinPad breathe: live buy and sell pressure on one side, every verified launch step on the other, and fresh pairs appearing as the chain confirms them."
         icon="activity"
       />
       <PulseWall />

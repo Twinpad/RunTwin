@@ -35,19 +35,19 @@ const metadataOrigin = process.env.VERCEL_PROJECT_PRODUCTION_URL
 export const metadata: Metadata = {
   metadataBase: new URL(metadataOrigin),
   title: {
-    default: "TwinPad — One Launchpad. Two Routes.",
+    default: "TwinPad — One Platform. Two Ways to Launch.",
     template: "%s | TwinPad",
   },
   description:
-    "TwinPad brings two established Solana launch mechanisms into one playful 3D universe: Pump.fun bonding curve to PumpSwap, or Raydium LaunchLab bonding curve to a Raydium CPMM pool. Choose your route, configure your token, and launch directly on-chain.",
+    "TwinPad puts two of Solana's favorite launch paths side by side: start on the Pump.fun curve, or go with Raydium LaunchLab. Track new tokens, follow the market, and ship your own idea — no code, no custody.",
   applicationName: "TwinPad",
   openGraph: {
-    title: "TwinPad — One Launchpad. Two Routes.",
+    title: "TwinPad — One Platform. Two Ways to Launch.",
     description:
-      "Choose your launch route — Pump.fun bonding curve to PumpSwap, or Raydium LaunchLab to a Raydium CPMM pool — and launch directly on-chain.",
+      "Pump.fun or Raydium LaunchLab? Pick your path, mint your token, and watch the ecosystem unfold around you — all in one playful corner of Solana.",
     siteName: "TwinPad",
     type: "website",
-    images: [{ url: "/twin-og.png", width: 1200, height: 630, alt: "TwinPad — One Launchpad. Two Routes." }],
+    images: [{ url: "/twin-og.png", width: 1200, height: 630, alt: "TwinPad — One Platform. Two Ways to Launch." }],
   },
 };
 

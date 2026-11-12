@@ -9,7 +9,7 @@ export default function LeaderboardPage() {
       <SectionHeading
         eyebrow="Ranked arena"
         title="Leaderboard"
-        description="Creator rankings are computed from TwinPad's launch registry (launch counts and on-chain-verified graduations only). Token boards come from the live Pump.fun engine — real trades, never simulated."
+        description="A running score of who's shipping launches and which tokens everyone is watching — creators come from our own registry, token boards from live trades. Nothing invented."
         icon="trophy"
       />
       <LeaderboardArena />

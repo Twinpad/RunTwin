@@ -10,7 +10,7 @@ export default function TrendingPage() {
       <SectionHeading
         eyebrow="Live market"
         title="Trending Universe"
-        description="Live Pump.fun rankings built from real trades streamed through TwinPad's backend — volume, price movement, buy pressure and migrations as they happen."
+        description="Real trades, ranked live. See which tokens are pulling volume, gaining ground, or heating up on Pump.fun — updated as the trades happen."
         icon="flame"
       />
       <TrendingBoard />

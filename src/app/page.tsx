@@ -13,10 +13,11 @@ import { officialTokenView } from "@/lib/official-token/token-display";
 
 /**
  * TwinPad home — the entry point of the launch universe.
- * Hero: the real 3D scene behind the "One Launchpad. Two Routes." headline
- * (CSS fallback for reduced-motion / weak devices). Below: launch stations,
- * trending preview, live ticker, creator podium and the newest launches —
- * every section fed by real backend endpoints with honest empty states.
+ * Hero: the real 3D scene behind the "One Platform. Two Ways to Launch."
+ * headline (CSS fallback for reduced-motion / weak devices). Below: launch
+ * stations, a live trending preview, the activity ticker, the creator
+ * podium and the newest launches — every section fed by real backend
+ * endpoints with honest empty states.
  * Force-dynamic: the Official $TWIN address must reflect the CURRENT
  * TWINPAD_OFFICIAL_MINT configuration on every request.
  */
@@ -33,16 +34,20 @@ export default function TwinPadHomePage() {
         <div className="relative z-10 px-6 py-14 text-center sm:px-12 sm:py-20 lg:py-24">
           <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-2xs font-bold uppercase tracking-[0.18em] text-white backdrop-blur-sm">
             <span className="h-1.5 w-1.5 animate-pulse-soft rounded-full bg-cyan-300" />
-            Solana · Two launch routes · Zero custody
+            Built on Solana · You always hold the keys
           </p>
           <h1 className="mx-auto max-w-3xl font-display text-5xl font-extrabold uppercase leading-[0.95] tracking-tight text-white sm:text-6xl lg:text-7xl">
-            One Launchpad.
+            One Platform.
             <br />
-            <span className="tp-gradient-text">Two Routes.</span>
+            <span className="tp-gradient-text">Two Ways to Launch.</span>
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-white/85 sm:text-base">
-            Discover new tokens, explore the Solana ecosystem, and launch your
-            next big idea.
+            Explore fresh projects, see what&apos;s moving across Solana, and bring
+            your next token idea to life with TwinPad.
+          </p>
+          <p className="mx-auto mt-2 max-w-xl text-2xs leading-relaxed text-white/60 sm:text-xs">
+            Pick your launch destination — Pump.fun or Raydium LaunchLab. Both
+            paths, brought together in one place.
           </p>
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
             <Link
@@ -65,9 +70,9 @@ export default function TwinPadHomePage() {
       {/* Two launch stations */}
       <LaunchPortals />
       <p className="text-center text-2xs leading-relaxed text-night-400">
-        Pump.fun and Raydium are independent Solana protocols. TwinPad builds each
-        route&apos;s transactions with the protocols&apos; official SDKs and is not
-        affiliated with, endorsed by, or sponsored by either of them.
+        Pump.fun and Raydium run their own independent protocols. TwinPad
+        builds each launch with the protocols&apos; official SDKs and isn&apos;t
+        affiliated with or endorsed by either of them.
       </p>
 
       {/* Trending universe preview */}
@@ -75,17 +80,17 @@ export default function TwinPadHomePage() {
         <div className="mb-4 flex items-end justify-between gap-3">
           <div>
             <p className="mb-1.5 inline-flex items-center gap-1.5 rounded-full border border-mint-400/25 bg-gradient-to-r from-violet-500/10 to-cyan-400/10 px-3 py-1 text-2xs font-bold uppercase tracking-[0.16em] text-mint-600 dark:text-mint-300">
-              🔥 Live market
+              🔥 On the radar
             </p>
             <h2 className="font-display text-xl font-extrabold tracking-tight text-ink sm:text-2xl">
-              Trending in the universe
+              What&apos;s trending right now
             </h2>
           </div>
           <Link
             href="/trending"
             className="group inline-flex items-center gap-1.5 rounded-xl border border-night-700 bg-paper px-4 py-2 text-xs font-bold text-night-400 transition-all duration-200 hover:border-mint-500/50 hover:text-ink"
           >
-            All trending
+            Full trending board
             <span className="transition-transform duration-200 group-hover:translate-x-0.5">→</span>
           </Link>
         </div>
@@ -103,15 +108,15 @@ export default function TwinPadHomePage() {
         <div className="mb-4 flex items-end justify-between gap-3">
           <div>
             <p className="mb-1.5 inline-flex items-center gap-1.5 rounded-full border border-mint-400/25 bg-gradient-to-r from-violet-500/10 to-cyan-400/10 px-3 py-1 text-2xs font-bold uppercase tracking-[0.16em] text-mint-600 dark:text-mint-300">
-              🚀 Fresh from the pad
+              🚀 Just lifted off
             </p>
-            <h2 className="font-display text-xl font-extrabold tracking-tight text-ink sm:text-2xl">Latest launches</h2>
+            <h2 className="font-display text-xl font-extrabold tracking-tight text-ink sm:text-2xl">Fresh launches</h2>
           </div>
           <Link
             href="/launches"
             className="group inline-flex items-center gap-1.5 rounded-xl border border-night-700 bg-paper px-4 py-2 text-xs font-bold text-night-400 transition-all duration-200 hover:border-mint-500/50 hover:text-ink"
           >
-            Launch marketplace
+            Browse every launch
             <span className="transition-transform duration-200 group-hover:translate-x-0.5">→</span>
           </Link>
         </div>

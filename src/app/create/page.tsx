@@ -187,7 +187,7 @@ export default function CreateTokenPage() {
         </p>
         <h1 className="font-display text-2xl font-extrabold tracking-tight text-ink">Create Your Token</h1>
         <p className="mt-1 text-sm text-night-400">
-          One guided flow, two launch paths. Protocol-specific settings appear once you choose your route.
+          One guided flow, two destinations. The protocol-specific settings appear once you pick a path.
         </p>
       </header>
 

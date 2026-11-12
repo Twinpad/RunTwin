@@ -1,11 +1,11 @@
-# TwinPad — One Launchpad. Two Routes.
+# TwinPad — One Platform. Two Ways to Launch.
 
-TwinPad is a standalone Solana token launchpad with **two launch routes**:
+TwinPad is a standalone Solana token launchpad with **two launch paths**:
 
 - **Route 01 — Pump.fun bonding curve → PumpSwap** (official `@pump-fun/pump-sdk`, `create_v2`)
 - **Route 02 — Raydium LaunchLab bonding curve → Raydium CPMM** (official `@raydium-io/raydium-sdk-v2`, `launchpad.createLaunchpad`)
 
-Users choose the ecosystem; TwinPad builds the correct route-specific
+Users pick the ecosystem; TwinPad builds the correct path-specific
 transaction, shows fees and details **before signing**, submits with safe
 retries, and tracks the token lifecycle (curve trading → graduation → verified
 destination pool) using **on-chain state as the sole source of truth** — all

@@ -356,9 +356,9 @@ export function TrendingBoard() {
       {/* Universe grid */}
       {rows.length === 0 && !loadError ? (
         <div className="rounded-3xl border border-dashed border-night-600 bg-paper/60 px-6 py-14 text-center">
-          <p className="font-display text-lg font-bold text-ink">No tokens in this ranking yet</p>
+          <p className="font-display text-lg font-bold text-ink">Nothing on this board yet</p>
           <p className="mx-auto mt-1 max-w-md text-sm text-night-400">
-            Rankings are built from real trades as they happen — nothing is simulated or backfilled.
+            Rankings fill up from real trades as they happen — never simulated, never backfilled.
           </p>
         </div>
       ) : (
