@@ -102,7 +102,7 @@ export function LaunchPortalCard({ spec, compact = false }: { spec: PortalSpec; 
         {spec.destination}
       </p>
       {!compact && <p className="mt-3 max-w-sm text-sm leading-relaxed text-night-400">{spec.blurb}</p>}
-      <span className="mt-5 inline-flex items-center gap-2 rounded-xl bg-ink px-5 py-2.5 text-sm font-bold text-white transition-transform duration-200 group-hover:scale-[1.03] dark:bg-white dark:text-ink">
+      <span className="mt-5 inline-flex items-center gap-2 rounded-xl bg-ink px-5 py-2.5 text-sm font-bold text-white transition-all duration-200 group-hover:scale-[1.03] group-hover:bg-[#24143D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-paper dark:bg-white dark:text-[#24143D] dark:group-hover:bg-[#EFECFF]">
         {spec.cta}
         <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" fill="currentColor" aria-hidden="true">
           <path d="M6.2 3.4 10.8 8l-4.6 4.6-1.4-1.4L8 8 4.8 4.8z" />
