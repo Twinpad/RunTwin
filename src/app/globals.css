@@ -1,0 +1,243 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * TwinPad "Candy Cosmos" theme — RGB channel triplets consumed by Tailwind
+ * tokens (see tailwind.config.ts). :root = Light (lavender, default),
+ * .dark = Midnight Arcade. The .dark class is applied pre-paint by the
+ * inline bootstrap script in layout.tsx, so the correct theme renders
+ * without flashing.
+ *
+ * Token NAMES are stable API (night/mint/ice/sky/deep/ink/paper/pale) —
+ * their VALUES carry the TwinPad identity: electric purple + bright cyan
+ * on soft lavender, with pink/orange/yellow as supporting candy accents.
+ */
+:root {
+  color-scheme: light;
+  /* Surfaces & neutrals — lavender-tinted, never plain gray */
+  --tp-n950: 246 244 255; /* #F6F4FF page background */
+  --tp-n900: 255 255 255; /* #FFFFFF chrome surfaces */
+  --tp-n850: 255 255 255; /* #FFFFFF cards */
+  --tp-n800: 241 237 254; /* #F1EDFE recessed tint */
+  --tp-n700: 229 222 250; /* #E5DEFA borders */
+  --tp-n600: 214 201 246; /* #D6C9F6 hover borders */
+  --tp-n500: 167 155 200; /* #A79BC8 faint text */
+  --tp-n400: 111 102 137; /* #6F6689 secondary text */
+  /* Electric purple (primary) */
+  --tp-m300: 196 181 253; /* #C4B5FD */
+  --tp-m400: 139 92 246; /* #8B5CF6 */
+  --tp-m500: 124 58 237; /* #7C3AED */
+  --tp-m600: 109 40 217; /* #6D28D9 */
+  --tp-m700: 91 33 182; /* #5B21B6 */
+  /* Bright cyan (highlights) */
+  --tp-i300: 165 243 252; /* #A5F3FC */
+  --tp-i400: 103 232 249; /* #67E8F9 */
+  --tp-i500: 6 182 212; /* #06B6D4 */
+  --tp-i600: 8 145 178; /* #0891B2 */
+  /* Typography & surfaces */
+  --tp-ink: 42 30 79; /* #2A1E4F */
+  --tp-paper: 255 255 255;
+  --tp-pale: 246 244 255;
+  /* Lavender chip tints */
+  --tp-s50: 244 241 255; /* #F4F1FF */
+  --tp-s100: 234 228 253; /* #EAE4FD */
+  --tp-s200: 216 203 250; /* #D8CBFA */
+  /* Deep stage sections & status */
+  --tp-deep: 76 29 149; /* #4C1D95 */
+  --tp-danger: 225 29 72; /* #E11D48 */
+  --tp-warn: 217 119 6; /* #D97706 */
+  --tp-up: 5 150 105; /* #059669 */
+  --tp-down: 224 82 82; /* #E05252 */
+  /* Elevation — soft purple-tinted candy shadows */
+  --tp-shadow-panel: 0 2px 6px rgba(42, 30, 79, 0.06), 0 16px 36px -18px rgba(124, 58, 237, 0.18);
+  --tp-shadow-glow: 0 2px 6px rgba(124, 58, 237, 0.12), 0 10px 26px -8px rgba(124, 58, 237, 0.4);
+  --tp-shadow-glow-strong: 0 12px 30px -10px rgba(6, 182, 212, 0.45);
+  /* Detail */
+  --tp-row: 42 30 79; /* table separators */
+  --tp-sb: 216 203 250; /* scrollbar thumb */
+  --tp-sb-hover: 189 172 244;
+  --tp-focus: 124 58 237;
+  --background: rgb(var(--tp-pale));
+  --foreground: rgb(var(--tp-ink));
+}
+
+.dark {
+  color-scheme: dark;
+  /* Midnight Arcade — deep violet-navy, never a flat gray inversion */
+  --tp-n950: 21 14 51; /* #150E33 page background */
+  --tp-n900: 29 20 66; /* #1D1442 chrome surfaces */
+  --tp-n850: 29 20 66; /* #1D1442 cards */
+  --tp-n800: 38 27 87; /* #261B57 elevated/hover */
+  --tp-n700: 58 43 125; /* #3A2B7D borders */
+  --tp-n600: 76 58 153; /* #4C3A99 hover borders */
+  --tp-n500: 142 130 187; /* #8E82BB faint text */
+  --tp-n400: 181 169 222; /* #B5A9DE secondary text */
+  /* Brighter purple for dark-surface contrast */
+  --tp-m300: 196 181 253;
+  --tp-m400: 167 139 250; /* #A78BFA */
+  --tp-m500: 139 92 246; /* #8B5CF6 */
+  --tp-m600: 124 58 237;
+  --tp-m700: 196 181 253;
+  /* Cyan stays luminous */
+  --tp-i300: 165 243 252;
+  --tp-i400: 103 232 249;
+  --tp-i500: 34 211 238; /* #22D3EE */
+  --tp-i600: 6 182 212;
+  /* Typography & surfaces */
+  --tp-ink: 244 241 255; /* #F4F1FF */
+  --tp-paper: 29 20 66;
+  --tp-pale: 21 14 51;
+  /* Lavender washes on dark */
+  --tp-s50: 35 26 82; /* #231A52 */
+  --tp-s100: 46 33 104; /* #2E2168 */
+  --tp-s200: 69 51 137; /* #453389 */
+  /* Deep stage & status — brighter for dark surfaces */
+  --tp-deep: 42 27 102; /* #2A1B66 */
+  --tp-danger: 251 113 133; /* #FB7185 */
+  --tp-warn: 251 191 36; /* #FBBF24 */
+  --tp-up: 52 211 153; /* #34D399 */
+  --tp-down: 248 113 113; /* #F87171 */
+  /* Elevation — hairline rings + deep violet drop */
+  --tp-shadow-panel: 0 0 0 1px rgba(196, 181, 253, 0.06), 0 18px 44px -22px rgba(0, 0, 0, 0.7);
+  --tp-shadow-glow: 0 2px 8px rgba(139, 92, 246, 0.25), 0 12px 30px -10px rgba(139, 92, 246, 0.45);
+  --tp-shadow-glow-strong: 0 14px 34px -12px rgba(34, 211, 238, 0.5);
+  /* Detail */
+  --tp-row: 255 255 255;
+  --tp-sb: 58 43 125;
+  --tp-sb-hover: 76 58 153;
+  --tp-focus: 167 139 250;
+  --background: rgb(var(--tp-pale));
+  --foreground: rgb(var(--tp-ink));
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  min-height: 100%;
+}
+
+body {
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+/* TwinPad ambience — lavender light with a cyan horizon glow. */
+body {
+  background-image:
+    radial-gradient(1100px 480px at 88% -8%, rgba(6, 182, 212, 0.09), transparent 60%),
+    radial-gradient(900px 460px at -6% -6%, rgba(139, 92, 246, 0.1), transparent 58%),
+    radial-gradient(700px 380px at 50% 110%, rgba(244, 114, 182, 0.07), transparent 60%);
+  background-repeat: no-repeat;
+}
+.dark body {
+  background-image:
+    radial-gradient(1100px 480px at 88% -8%, rgba(34, 211, 238, 0.08), transparent 60%),
+    radial-gradient(900px 460px at -6% -6%, rgba(139, 92, 246, 0.12), transparent 58%),
+    radial-gradient(700px 380px at 50% 112%, rgba(244, 114, 182, 0.06), transparent 60%);
+}
+
+::selection {
+  background: rgba(139, 92, 246, 0.28);
+}
+
+/* Accessible focus outline for keyboard users */
+:focus-visible {
+  outline: 2px solid rgb(var(--tp-focus));
+  outline-offset: 1px;
+}
+
+/* Theme-aware scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--tp-sb));
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--tp-sb-hover));
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Thin data-table separators */
+.row-sep {
+  border-bottom: 1px solid rgb(var(--tp-row) / 0.08);
+}
+.row-sep:last-child {
+  border-bottom: none;
+}
+
+/* ==========================================================================
+   TwinPad motion kit — CSS-only scene pieces + micro-interactions.
+   Every animation below is decorative; the reduced-motion rule at the end
+   freezes them all for visitors who prefer stillness.
+   ========================================================================== */
+
+@keyframes tp-float {
+  0%, 100% { transform: translateY(0) rotate(var(--tp-tilt, 0deg)); }
+  50% { transform: translateY(-14px) rotate(var(--tp-tilt, 0deg)); }
+}
+@keyframes tp-drift {
+  from { transform: translateX(-8%); }
+  to { transform: translateX(8%); }
+}
+@keyframes tp-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+@keyframes tp-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes tp-spin-rev {
+  to { transform: rotate(-360deg); }
+}
+@keyframes tp-pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  70% { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.tp-float { animation: tp-float 5.5s ease-in-out infinite; }
+.tp-drift { animation: tp-drift 16s ease-in-out infinite alternate; }
+.tp-bob { animation: tp-bob 3.4s ease-in-out infinite; }
+.tp-portal-spin { animation: tp-spin 9s linear infinite; }
+.tp-portal-spin-rev { animation: tp-spin-rev 6.5s linear infinite; }
+.tp-pop { animation: tp-pop 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both; }
+
+/* Signature gradient headline */
+.tp-gradient-text {
+  background: linear-gradient(92deg, #7C3AED 0%, #D946EF 45%, #06B6D4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Soft 3D card tilt on hover (used by portal cards + collectible tokens) */
+.tp-tilt {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+@media (hover: hover) and (pointer: fine) {
+  .tp-tilt:hover {
+    transform: perspective(1000px) rotateX(1.6deg) rotateY(-2.2deg) translateY(-4px);
+  }
+}
+
+/* Respect reduced-motion preferences across all transitions/animations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
