@@ -4,7 +4,7 @@
   "private": true,
   "description": "TwinPad — One Launchpad. Two Routes. Solana dual-route token launchpad (Pump.fun -> PumpSwap, Raydium LaunchLab -> CPMM).",
   "scripts": {
-    "dev": "next dev -p 3212 -H localhost",
+    "dev": "next dev -p 3212 -H 127.0.0.1",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
