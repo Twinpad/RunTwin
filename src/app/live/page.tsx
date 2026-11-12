@@ -1,18 +1,20 @@
-import { ActivityPanel } from "@/components/dashboard/activity-panel";
+import { PulseWall, LaunchTimeline, NewPairsStrip } from "@/components/live/live-universe";
+import { SectionHeading } from "@/components/ui/section";
 
-export const metadata = { title: "Live Launches" };
+export const metadata = { title: "Live Activity" };
 
 export default function LivePage() {
   return (
-    <div className="animate-fade-up">
-      <header className="mb-4">
-        <h1 className="font-display text-lg font-semibold tracking-tight text-ink">Live Launches</h1>
-        <p className="mt-0.5 text-2xs text-night-500">
-          Real lifecycle events from TwinPad&apos;s registry — preparation, confirmation,
-          curve progress, graduation, and pool verification. Auto-refreshes every 20s.
-        </p>
-      </header>
-      <ActivityPanel full />
+    <div className="animate-fade-up space-y-8">
+      <SectionHeading
+        eyebrow="Live universe"
+        title="Live Market Universe"
+        description="Real activity as it happens: the market pulse streams live buy/sell pressure through TwinPad's backend, the launch timeline tracks every verified lifecycle event, and new pools appear the moment they are confirmed on-chain."
+        icon="activity"
+      />
+      <PulseWall />
+      <LaunchTimeline />
+      <NewPairsStrip />
     </div>
   );
 }

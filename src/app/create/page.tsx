@@ -181,10 +181,13 @@ export default function CreateTokenPage() {
 
   return (
     <div className="animate-fade-up mx-auto max-w-2xl">
-      <header className="mb-4">
-        <h1 className="font-display text-lg font-semibold tracking-tight text-ink">Create Your Token</h1>
-        <p className="mt-0.5 text-2xs text-night-500">
-          One guided flow, two launch paths. Protocol-specific settings appear once you choose.
+      <header className="mb-5">
+        <p className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-mint-400/25 bg-gradient-to-r from-violet-500/10 to-cyan-400/10 px-3 py-1 text-2xs font-bold uppercase tracking-[0.16em] text-mint-600 dark:text-mint-300">
+          🚀 Launch station
+        </p>
+        <h1 className="font-display text-2xl font-extrabold tracking-tight text-ink">Create Your Token</h1>
+        <p className="mt-1 text-sm text-night-400">
+          One guided flow, two launch paths. Protocol-specific settings appear once you choose your route.
         </p>
       </header>
 

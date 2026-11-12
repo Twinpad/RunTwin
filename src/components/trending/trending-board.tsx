@@ -1,29 +1,36 @@
 "use client";
 
 /**
- * Live Pump.fun Trending board — real-time data from TwinPad's backend engine
- * (/api/trending + SSE /api/trending/stream). The backend owns the single
- * PumpPortal connection; the browser only subscribes to TwinPad's stream.
+ * Trending Universe — the redesigned market discovery experience.
+ *
+ * Real-time Pump.fun rankings from TwinPad's backend engine (/api/trending +
+ * SSE /api/trending/stream). The backend owns the single PumpPortal
+ * connection; the browser subscribes to TwinPad's stream only.
+ *
+ * Layout: one FEATURED collectible card (the current #1) above a responsive
+ * grid of compact collectible cards. Every number is real engine output —
+ * unavailable metrics render as N/A, never fabricated.
  */
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { TokenImage } from "@/components/dashboard/token-row";
-import { Badge } from "@/components/ui/primitives";
 import { Icon } from "@/components/ui/icons";
 import { timeAgo } from "@/lib/format";
-import type { TrendingRow, TrendingStats, TrendingTab, TrendingTimeframe } from "@/lib/pump-live/types";
+import type { TrendingRow, TrendingTab, TrendingTimeframe } from "@/lib/pump-live/types";
 
-const TABS: { key: TrendingTab; label: string }[] = [
-  { key: "trending", label: "Trending Now" },
-  { key: "volume", label: "Highest Volume" },
-  { key: "gainers", label: "Biggest Gainers" },
-  { key: "losers", label: "Biggest Losers" },
-  { key: "most-bought", label: "Most Bought" },
-  { key: "newest", label: "Newest Tokens" },
-  { key: "migrated", label: "Recently Migrated" },
+const TABS: { key: TrendingTab; label: string; icon: string }[] = [
+  { key: "trending", label: "Trending Now", icon: "flame" },
+  { key: "volume", label: "Top Volume", icon: "activity" },
+  { key: "gainers", label: "Top Gainers", icon: "trending" },
+  { key: "losers", label: "Top Losers", icon: "trending" },
+  { key: "most-bought", label: "Most Bought", icon: "zap" },
+  { key: "newest", label: "Newest", icon: "rocket" },
+  { key: "migrated", label: "Migrated", icon: "award" },
 ];
 
 const TIMEFRAMES: { key: TrendingTimeframe; label: string }[] = [
+  { key: "5m", label: "5M" },
   { key: "1h", label: "1H" },
   { key: "4h", label: "4H" },
   { key: "12h", label: "12H" },
@@ -42,16 +49,11 @@ interface StreamPayload {
   };
 }
 
-function formatCompactUsd(n: number): string {
-  if (n >= 1e9) return `${(n / 1e9).toFixed(2)}B`;
-  if (n >= 1e6) return `${(n / 1e6).toFixed(2)}M`;
-  if (n >= 1e3) return `${(n / 1e3).toFixed(1)}K`;
-  return n.toFixed(0);
-}
-
 function fmtUsd(n: number | null): string {
   if (n === null || !Number.isFinite(n)) return "N/A";
-  if (n >= 1000) return `$${formatCompactUsd(n)}`;
+  if (n >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
+  if (n >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
+  if (n >= 1e3) return `$${(n / 1e3).toFixed(1)}K`;
   if (n >= 1) return `$${n.toFixed(2)}`;
   if (n > 0) return `$${n.toPrecision(3)}`;
   return "$0";
@@ -64,102 +66,248 @@ function fmtChange(n: number | null): string {
 
 type ConnState = "live" | "reconnecting" | "offline";
 
+function ActivityBar({ buys, sells }: { buys: number; sells: number }) {
+  const total = buys + sells;
+  const pct = total > 0 ? Math.round((buys / total) * 100) : null;
+  if (pct === null) {
+    return <div className="h-1.5 w-full rounded-full bg-night-700" title="No trades in this window yet" />;
+  }
+  return (
+    <div className="h-1.5 w-full overflow-hidden rounded-full bg-night-700" title={`${buys} buys / ${sells} sells`}>
+      <div
+        className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 transition-[width] duration-700"
+        style={{ width: `${Math.max(6, Math.min(94, pct))}%` }}
+      />
+    </div>
+  );
+}
+
+function TrendCard({ row, rank, featured = false }: { row: TrendingRow; rank: number; featured?: boolean }) {
+  if (featured) {
+    return (
+      <Link
+        href={`/tokens/${row.mint}`}
+        className="tp-tilt group relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-transparent bg-gradient-to-br from-[#4C1D95] via-[#6D28D9] to-[#0E7490] p-6 text-white shadow-[0_24px_60px_-24px_rgba(109,40,217,0.65)]"
+      >
+        <span aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-44 w-44 rounded-full bg-cyan-400/25 blur-2xl" />
+        <span aria-hidden className="pointer-events-none absolute -bottom-14 -left-10 h-40 w-40 rounded-full bg-fuchsia-500/25 blur-2xl" />
+        <div className="relative flex items-start justify-between gap-3">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-2xs font-extrabold uppercase tracking-[0.14em] backdrop-blur-sm">
+            <Icon name="flame" size={12} />
+            Featured · Rank #{rank + 1}
+          </span>
+          <div className="flex items-center gap-1.5">
+            {row.hot && (
+              <span className="rounded-full bg-orange-400/90 px-2 py-0.5 text-2xs font-extrabold text-[#2A1E4F]">HOT</span>
+            )}
+            {row.migrated && (
+              <span className="rounded-full bg-emerald-400/90 px-2 py-0.5 text-2xs font-extrabold text-[#2A1E4F]">MIGRATED</span>
+            )}
+          </div>
+        </div>
+        <div className="relative flex items-center gap-4">
+          <span className="rounded-3xl bg-white/15 p-[3px] shadow-[0_12px_30px_-10px_rgba(0,0,0,0.5)] backdrop-blur-sm">
+            <TokenImage imageUrl={row.imageUrl} symbol={row.symbol} size={76} />
+          </span>
+          <div className="min-w-0">
+            <p className="truncate font-display text-xl font-extrabold">{row.name}</p>
+            <p className="font-mono text-xs text-white/80">${row.symbol}</p>
+            <p className="mt-1 truncate font-mono text-2xs text-white/60">{row.mint}</p>
+          </div>
+        </div>
+        <div className="relative grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
+          {[
+            ["Price", fmtUsd(row.priceUsd)],
+            ["Market cap", fmtUsd(row.marketCapUsd)],
+            ["Volume", fmtUsd(row.volumeUsd)],
+          ].map(([label, value]) => (
+            <div key={label} className="rounded-xl bg-white/10 px-3 py-2 backdrop-blur-sm">
+              <p className="text-2xs text-white/65">{label}</p>
+              <p className="font-mono font-bold">{value}</p>
+            </div>
+          ))}
+          <div className="rounded-xl bg-white/10 px-3 py-2 backdrop-blur-sm">
+            <p className="text-2xs text-white/65">Change</p>
+            <p
+              className={`font-mono font-bold ${
+                row.changePct != null && row.changePct < 0 ? "text-rose-200" : "text-emerald-200"
+              }`}
+            >
+              {fmtChange(row.changePct)}
+            </p>
+          </div>
+        </div>
+        <div className="relative">
+          <ActivityBar buys={row.buys} sells={row.sells} />
+          <div className="mt-1.5 flex items-center justify-between text-2xs text-white/70">
+            <span>
+              {row.buys} buys · {row.sells} sells
+            </span>
+            <span>age {timeAgo(row.createdAt)}</span>
+          </div>
+        </div>
+      </Link>
+    );
+  }
+  return (
+    <Link
+      href={`/tokens/${row.mint}`}
+      className="tp-tilt group relative flex flex-col gap-2.5 overflow-hidden rounded-2xl border border-night-700 bg-paper p-3.5 shadow-panel transition-all duration-300 hover:border-transparent hover:shadow-glow-mint"
+    >
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -right-8 -top-8 h-20 w-20 rounded-full bg-gradient-to-br from-cyan-400/25 to-violet-500/20 blur-xl opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+      />
+      <div className="relative flex items-center gap-2.5">
+        <span className="font-display text-2xs font-extrabold text-night-500">#{rank + 1}</span>
+        <span className="rounded-2xl bg-gradient-to-br from-violet-500/50 via-fuchsia-400/30 to-cyan-400/50 p-[2px] shadow-glow-mint">
+          <span className="block overflow-hidden rounded-[14px] bg-paper dark:bg-[#1D1442]">
+            <TokenImage imageUrl={row.imageUrl} symbol={row.symbol} size={44} />
+          </span>
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-display text-[13px] font-bold text-ink">{row.name}</p>
+          <p className="truncate font-mono text-2xs text-night-500">${row.symbol}</p>
+        </div>
+        {row.hot && (
+          <span className="rounded-lg bg-orange-500/15 px-1.5 py-0.5 text-2xs font-extrabold text-orange-600 dark:text-orange-300">
+            HOT
+          </span>
+        )}
+      </div>
+      <div className="relative flex items-center justify-between gap-2">
+        <span className="font-mono text-xs text-ink">{fmtUsd(row.priceUsd)}</span>
+        <span
+          className={`rounded-lg px-1.5 py-0.5 font-mono text-2xs font-bold ${
+            row.changePct == null || !Number.isFinite(row.changePct)
+              ? "bg-night-800 text-night-500"
+              : row.changePct >= 0
+                ? "bg-up/12 text-up"
+                : "bg-down/12 text-down"
+          }`}
+        >
+          {fmtChange(row.changePct)}
+        </span>
+      </div>
+      <div className="relative flex items-center justify-between text-2xs text-night-500">
+        <span>
+          Vol <span className="font-mono text-night-400">{fmtUsd(row.volumeUsd)}</span>
+        </span>
+        <span>
+          MC <span className="font-mono text-night-400">{fmtUsd(row.marketCapUsd)}</span>
+        </span>
+      </div>
+      <div className="relative">
+        <ActivityBar buys={row.buys} sells={row.sells} />
+        <div className="mt-1 flex items-center justify-between text-2xs text-night-500">
+          <span>
+            {row.buys}B / {row.sells}S
+          </span>
+          <span>age {timeAgo(row.createdAt)}</span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 export function TrendingBoard() {
   const [tab, setTab] = useState<TrendingTab>("trending");
   const [tf, setTf] = useState<TrendingTimeframe>("1h");
   const [rows, setRows] = useState<TrendingRow[]>([]);
   const [meta, setMeta] = useState<StreamPayload["meta"] | null>(null);
-  const [stats, setStats] = useState<TrendingStats | null>(null);
   const [conn, setConn] = useState<ConnState>("reconnecting");
-  const [lastUpdate, setLastUpdate] = useState<number | null>(null);
+  const [stale, setStale] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const esRef = useRef<EventSource | null>(null);
 
   const apply = useCallback((p: StreamPayload) => {
-    setRows(p.rows);
+    setRows(Array.isArray(p.rows) ? p.rows : []);
     setMeta(p.meta);
-    setLastUpdate(Date.now());
     setConn("live");
   }, []);
 
   // Initial + on-demand REST fetch (first paint and tab switches).
   useEffect(() => {
     let live = true;
+    setLoadError(false);
     fetch(`/api/trending?tab=${tab}&tf=${tf}`, { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((j: StreamPayload | null) => {
-        if (live && j && Array.isArray(j.rows)) apply(j);
+      .then((r) => {
+        if (!r.ok) throw new Error(String(r.status));
+        return r.json();
       })
-      .catch(() => {});
+      .then((j: StreamPayload) => {
+        if (live) apply(j);
+      })
+      .catch(() => {
+        if (live) setLoadError(true);
+      });
     return () => {
       live = false;
     };
   }, [tab, tf, apply]);
 
-  // SSE subscription — the browser's only real-time channel.
+  // SSE subscription — the browser's only real-time channel. EventSource
+  // reconnects natively; we surface the honest connection state.
   useEffect(() => {
     setConn("reconnecting");
     const es = new EventSource(`/api/trending/stream?tab=${tab}&tf=${tf}`);
     esRef.current = es;
-    es.onmessage = (ev) => {
+    es.onmessage = (ev: MessageEvent<string>) => {
       try {
-        const p = JSON.parse(ev.data) as StreamPayload;
-        if (p && Array.isArray(p.rows)) apply(p);
+        apply(JSON.parse(ev.data) as StreamPayload);
       } catch {
-        // malformed frame — the next tick arrives shortly
+        /* malformed frame — ignore, next frame re-syncs */
       }
     };
-    es.onopen = () => setConn("live");
-    es.onerror = () => {
-      // EventSource auto-reconnects; reflect the state honestly.
-      setConn((c) => (c === "live" ? "reconnecting" : c));
-    };
+    es.onerror = () => setConn("offline");
     return () => {
       es.close();
       esRef.current = null;
     };
   }, [tab, tf, apply]);
 
-  // Poll pipeline stats occasionally for the health footer.
+  // Staleness ticker: the stream may stall without an error event.
   useEffect(() => {
-    const load = () =>
-      fetch("/api/trending/stats", { cache: "no-store" })
-        .then((r) => (r.ok ? r.json() : null))
-        .then((j) => j && setStats(j))
-        .catch(() => {});
-    load();
-    const t = setInterval(load, 15_000);
+    const t = setInterval(() => {
+      setStale(!meta || Date.now() - meta.generatedAt > 15_000);
+    }, 5_000);
     return () => clearInterval(t);
-  }, []);
+  }, [meta]);
 
-  const stale = meta?.stale ?? false;
+  const featured = rows[0];
+  const rest = rows.slice(1, 10);
+
   return (
-    <div className="rounded-xl border border-night-700 bg-paper shadow-panel">
-      {/* Header: tabs + time filters + connection indicator */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-night-700 px-3 py-2.5">
-        <div className="flex flex-wrap items-center gap-0.5 rounded-lg bg-night-800/70 p-1">
+    <div className="space-y-4">
+      {/* Controls */}
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
           {TABS.map((t) => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
               aria-pressed={tab === t.key}
-              className={`rounded-md px-2 py-1 text-2xs font-medium transition-colors duration-200 ${
-                tab === t.key ? "bg-sky-100 text-mint-700" : "text-night-400 hover:bg-night-800 hover:text-ink"
+              className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-2xs font-bold transition-all duration-200 ${
+                tab === t.key
+                  ? "border-transparent bg-gradient-to-br from-violet-500 to-cyan-500 text-white shadow-glow-mint"
+                  : "border-night-700 bg-paper text-night-400 hover:border-mint-500/40 hover:text-ink"
               }`}
             >
+              <Icon name={t.icon} size={12} className={t.key === "losers" ? "-scale-y-100" : ""} />
               {t.label}
             </button>
           ))}
         </div>
         <div className="ml-auto flex items-center gap-2">
-          <div className="flex items-center gap-0.5 rounded-lg bg-night-800/70 p-1">
+          <div className="flex items-center gap-0.5 rounded-xl border border-night-700 bg-paper p-0.5">
             {TIMEFRAMES.map((t) => (
               <button
                 key={t.key}
                 onClick={() => setTf(t.key)}
                 aria-pressed={tf === t.key}
                 disabled={tab === "newest" || tab === "migrated"}
-                className={`rounded-md px-2 py-1 text-2xs font-semibold transition-colors duration-200 disabled:opacity-40 ${
-                  tf === t.key ? "bg-sky-100 text-mint-700" : "text-night-400 hover:bg-night-800 hover:text-ink"
+                className={`rounded-lg px-2.5 py-1 text-2xs font-extrabold transition-colors duration-200 disabled:opacity-40 ${
+                  tf === t.key ? "bg-gradient-to-br from-violet-500 to-cyan-500 text-white" : "text-night-400 hover:text-ink"
                 }`}
               >
                 {t.label}
@@ -167,8 +315,8 @@ export function TrendingBoard() {
             ))}
           </div>
           <span
-            className="inline-flex items-center gap-1.5 rounded-full border border-night-700 bg-night-950 px-2.5 py-1 text-2xs font-medium text-night-400"
-            title={stale ? "Data stream stalled — reconnecting" : "Receiving live Pump.fun events"}
+            className="inline-flex items-center gap-1.5 rounded-full border border-night-700 bg-night-950 px-2.5 py-1 text-2xs font-bold text-night-400"
+            title={stale ? "Data stream stalled — reconnecting" : conn === "live" ? "Receiving live Pump.fun events" : "Connecting to the live stream"}
           >
             <span
               className={`h-1.5 w-1.5 rounded-full ${
@@ -180,120 +328,51 @@ export function TrendingBoard() {
         </div>
       </div>
 
-      {/* Honest data-coverage notice */}
+      {/* Honest data-coverage notices */}
       {meta?.historyPartial && (
-        <p className="border-b border-night-700 bg-night-800/60 px-3 py-1.5 text-2xs text-night-400">
-          Rolling windows are still filling — rankings cover only the period since this pipeline
-          started collecting live trades (24h history completes as data accumulates).
+        <p className="rounded-xl border border-night-700/70 bg-night-800/60 px-3 py-2 text-2xs text-night-400">
+          Rolling windows are still filling — rankings cover only the period since this pipeline started
+          collecting live trades (24h history completes as data accumulates).
         </p>
       )}
       {stale && (
-        <p className="border-b border-night-700 bg-warn/10 px-3 py-1.5 text-2xs text-warn">
+        <p className="rounded-xl border border-warn/30 bg-warn/10 px-3 py-2 text-2xs text-warn">
           Live stream stalled — showing the last verified snapshot while the backend reconnects.
         </p>
       )}
 
-      {/* Column header */}
-      <div className="hidden items-center gap-3 border-b border-night-700 px-3 py-1.5 text-2xs font-medium uppercase tracking-wider text-night-500 sm:flex">
-        <span className="w-8 shrink-0">#</span>
-        <span className="flex min-w-0 flex-1 items-center gap-2">Token</span>
-        <span className="w-24 shrink-0 text-right">Price</span>
-        <span className="hidden w-24 shrink-0 text-right md:block">Market Cap</span>
-        <span className="w-24 shrink-0 text-right">Volume</span>
-        <span className="w-16 shrink-0 text-right">Change</span>
-        <span className="hidden w-20 shrink-0 text-right lg:block">Buys / Sells</span>
-        <span className="w-16 shrink-0 text-right">Age</span>
-      </div>
+      {loadError && rows.length === 0 && (
+        <div className="rounded-xl border border-danger/30 bg-danger/5 px-4 py-3 text-sm text-danger">
+          Trending rankings are unavailable right now.
+          <button
+            onClick={() => setLoadError(false)}
+            className="ml-2 rounded-lg border border-danger/40 px-2 py-0.5 text-2xs hover:bg-danger/10"
+          >
+            Retry
+          </button>
+        </div>
+      )}
 
-      {/* Rows — every value is real engine output; nulls render as N/A */}
-      {rows.length === 0 ? (
-        <div className="flex flex-col items-center gap-2 px-4 py-12 text-center">
-          {/* Twinny peek — TwinPad mascot (inline SVG) */}
-          <svg viewBox="0 0 120 120" aria-hidden="true" className="mb-1 h-12 w-12 opacity-95">
-            <circle cx="60" cy="58" r="36" fill="#F5F3FF" stroke="#E5DEFA" strokeWidth="2" />
-            <ellipse cx="60" cy="54" rx="18" ry="14" fill="#2A1E4F" />
-            <circle cx="53" cy="52" r="3.4" fill="#22D3EE" />
-            <circle cx="67" cy="52" r="3.4" fill="#22D3EE" />
-            <circle cx="42" cy="66" r="4.5" fill="#F472B6" opacity="0.8" />
-            <circle cx="78" cy="66" r="4.5" fill="#F472B6" opacity="0.8" />
-            <line x1="60" y1="22" x2="60" y2="12" stroke="#8B5CF6" strokeWidth="3" />
-            <circle cx="60" cy="10" r="4.5" fill="#22D3EE" />
-          </svg>
-          <p className="text-[13px] text-night-400">
-            {conn === "live" ? "No tokens match this ranking yet." : "Connecting to the live Pump.fun stream…"}
-          </p>
-          <p className="max-w-sm text-2xs text-night-500">
+      {/* Universe grid */}
+      {rows.length === 0 && !loadError ? (
+        <div className="rounded-3xl border border-dashed border-night-600 bg-paper/60 px-6 py-14 text-center">
+          <p className="font-display text-lg font-bold text-ink">No tokens in this ranking yet</p>
+          <p className="mx-auto mt-1 max-w-md text-sm text-night-400">
             Rankings are built from real trades as they happen — nothing is simulated or backfilled.
           </p>
         </div>
       ) : (
-        <ul aria-busy={conn !== "live"}>
-          {rows.map((r, i) => (
-            <li key={r.mint} className="row-sep">
-              <Link
-                href={`/tokens/${r.mint}`}
-                className="group flex items-center gap-3 px-3 py-2.5 transition-colors hover:bg-night-800"
-              >
-                <span className="w-8 shrink-0 text-2xs font-semibold text-night-500">{i + 1}</span>
-                <TokenImage imageUrl={r.imageUrl} symbol={r.symbol} size={34} />
-                <span className="flex min-w-0 flex-1 flex-col">
-                  <span className="flex items-center gap-1.5">
-                    <span className="truncate text-[13px] font-medium text-ink group-hover:text-mint-300">{r.name}</span>
-                    {r.hot && (
-                      <span className="shrink-0 rounded bg-danger/10 px-1 py-0.5 text-2xs font-bold text-danger">HOT</span>
-                    )}
-                    {r.migrated ? <Badge tone="ice">PumpSwap</Badge> : <Badge tone="mint">Curve</Badge>}
-                  </span>
-                  <span className="mt-0.5 flex items-center gap-2 text-2xs text-night-500">
-                    <span className="font-mono">${r.symbol}</span>
-                    <span className="hidden sm:inline">· {timeAgo(new Date(r.createdAt))}</span>
-                    {r.poolAddress && (
-                      <span className="hidden font-mono md:inline">· pool {r.poolAddress.slice(0, 6)}…</span>
-                    )}
-                  </span>
-                </span>
-                <span className="w-24 shrink-0 text-right font-mono text-xs text-ink">{fmtUsd(r.priceUsd)}</span>
-                <span className="hidden w-24 shrink-0 text-right font-mono text-xs text-night-400 md:block">
-                  {fmtUsd(r.marketCapUsd)}
-                </span>
-                <span className="w-24 shrink-0 text-right font-mono text-xs text-ink">{fmtUsd(r.volumeUsd)}</span>
-                <span
-                  className={`w-16 shrink-0 text-right font-mono text-xs ${
-                    r.changePct === null ? "text-night-500" : r.changePct >= 0 ? "text-up" : "text-down"
-                  }`}
-                >
-                  {fmtChange(r.changePct)}
-                </span>
-                <span className="hidden w-20 shrink-0 text-right font-mono text-2xs text-night-400 lg:block">
-                  <span className="text-up">{r.buys}</span> / <span className="text-down">{r.sells}</span>
-                </span>
-                <span className="w-16 shrink-0 text-right text-2xs text-night-500">
-                  {r.lastTradeAt ? timeAgo(new Date(r.lastTradeAt)) : "—"}
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        rows.length > 0 && (
+          <div className="space-y-4">
+            <TrendCard row={featured} rank={0} featured />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+              {rest.map((row, i) => (
+                <TrendCard key={row.mint} row={row} rank={i + 1} />
+              ))}
+            </div>
+          </div>
+        )
       )}
-
-      {/* Footer: live pipeline stats (real numbers from the engine) */}
-      {stats?.tradeStreamingAvailable === false && (
-        <p className="border-b border-night-700 bg-night-800/60 px-3 py-1.5 text-2xs text-night-400">
-          Per-token trade streaming requires a funded PumpPortal API key — trades are sourced
-          directly from the Solana chain via on-chain RPC for active tokens.
-        </p>
-      )}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-night-700 px-3 py-2 text-2xs text-night-500">
-        <span className="inline-flex items-center gap-1">
-          <Icon name="zap" size={11} className="text-mint-500" />
-          {stats ? `${stats.tradeEventsProcessed.toLocaleString()} live trades processed` : "loading pipeline stats…"}
-        </span>
-        <span>{stats ? `${stats.newTokenEvents.toLocaleString()} new tokens seen` : ""}</span>
-        <span>{stats ? `${stats.tokensTracked.toLocaleString()} tracked` : ""}</span>
-        <span>{stats ? `trades via ${stats.tradeSource === "ws" ? "PumpPortal stream" : "on-chain RPC"}` : ""}</span>
-        <span>{meta?.solUsd != null ? `SOL $${meta.solUsd.toFixed(2)} (${meta.solUsdSource})` : "SOL price N/A"}</span>
-        <span className="ml-auto">{lastUpdate ? `updated ${timeAgo(new Date(lastUpdate))}` : ""}</span>
-      </div>
     </div>
   );
 }

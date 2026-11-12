@@ -1,4 +1,5 @@
 import { TrendingBoard } from "@/components/trending/trending-board";
+import { SectionHeading } from "@/components/ui/section";
 
 export const metadata = { title: "Trending" };
 export const dynamic = "force-dynamic";
@@ -6,13 +7,12 @@ export const dynamic = "force-dynamic";
 export default function TrendingPage() {
   return (
     <div className="animate-fade-up">
-      <header className="mb-4">
-        <h1 className="font-display text-lg font-semibold tracking-tight text-ink">Trending</h1>
-        <p className="mt-0.5 text-2xs text-night-500">
-          Live Pump.fun rankings from real trades streamed through TwinPad&apos;s backend — new
-          tokens, volume, price movement, and migrations as they happen.
-        </p>
-      </header>
+      <SectionHeading
+        eyebrow="Live market"
+        title="Trending Universe"
+        description="Live Pump.fun rankings built from real trades streamed through TwinPad's backend — volume, price movement, buy pressure and migrations as they happen."
+        icon="flame"
+      />
       <TrendingBoard />
     </div>
   );

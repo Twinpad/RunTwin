@@ -161,38 +161,33 @@ function GlobalSearch() {
   );
 }
 
-export function Topbar({ onMenu }: { onMenu: () => void }) {
+export function Topbar(_props: { onMenu?: () => void }) {
   return (
-    <header className="sticky top-0 z-30 border-b border-night-700 bg-paper/90 backdrop-blur">
-      <div className="flex items-center gap-3 px-4 py-2.5">
-        <button
-          onClick={onMenu}
-          aria-label="Open navigation"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-night-400 hover:bg-night-800 hover:text-ink md:hidden"
+    <header className="sticky top-2 z-30 mx-auto mb-4 flex max-w-[1560px] items-center gap-2 rounded-2xl border border-night-700/60 bg-paper/85 px-3 py-2 shadow-panel backdrop-blur-xl sm:mx-3 sm:gap-3">
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 rounded-2xl bg-gradient-to-r from-violet-500/8 via-transparent to-cyan-400/8"
+      />
+      <Link href="/" aria-label="TwinPad home" className="flex shrink-0 items-center gap-2">
+        <span className="sm:hidden">
+          <TwinMark size={28} />
+        </span>
+        <span className="hidden sm:inline">
+          <TwinWordmark height={30} />
+        </span>
+      </Link>
+      <GlobalSearch />
+      <div className="ml-auto flex items-center gap-2">
+        <NetworkIndicator />
+        <Link
+          href="/create"
+          className="hidden items-center gap-1.5 rounded-xl bg-gradient-to-br from-violet-500 to-cyan-500 px-3 py-1.5 text-xs font-bold text-white shadow-glow-mint transition hover:brightness-110 sm:flex"
         >
-          <Icon name="menu" size={18} />
-        </button>
-        <Link href="/" aria-label="TwinPad home" className="flex shrink-0 items-center gap-2">
-          <span className="sm:hidden">
-            <TwinMark size={26} />
-          </span>
-          <span className="hidden sm:inline">
-            <TwinWordmark height={30} />
-          </span>
+          <Icon name="plus" size={13} />
+          Launch
         </Link>
-        <GlobalSearch />
-        <div className="ml-auto flex items-center gap-2">
-          <NetworkIndicator />
-          <Link
-            href="/create"
-            className="hidden items-center gap-1.5 rounded-lg bg-mint-500 px-3 py-1.5 text-xs font-semibold text-snow shadow-glow-mint transition hover:bg-mint-400 sm:flex"
-          >
-            <Icon name="plus" size={13} />
-            Create
-          </Link>
-          <ThemeToggle />
-          <WalletButton />
-        </div>
+        <ThemeToggle />
+        <WalletButton />
       </div>
     </header>
   );
