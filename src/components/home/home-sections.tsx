@@ -57,10 +57,10 @@ export function ChangeChip({ value, className = "" }: { value: number | null; cl
 export function ArtRing({ children, size = 44 }: { children: React.ReactNode; size?: number }) {
   return (
     <span
-      className="tp-tilt shrink-0 rounded-2xl bg-gradient-to-br from-violet-500/50 via-fuchsia-400/30 to-cyan-400/50 p-[2px] shadow-glow-mint"
+      className="tp-tilt shrink-0 rounded-2xl bg-gradient-to-br from-bloom-400/60 via-bloom-300/30 to-lagoon-400/60 p-[2px] shadow-glow-mint"
       style={{ width: size + 4, height: size + 4 }}
     >
-      <span className="block h-full w-full overflow-hidden rounded-[14px] bg-paper dark:bg-[#1D1442]">{children}</span>
+      <span className="block h-full w-full overflow-hidden rounded-[14px] bg-paper dark:bg-[#181045]">{children}</span>
     </span>
   );
 }
@@ -77,7 +77,7 @@ function MiniTrendCard({ row, rank }: { row: TrendingRow; rank: number }) {
     >
       <span
         aria-hidden
-        className="pointer-events-none absolute -right-8 -top-8 h-20 w-20 rounded-full bg-gradient-to-br from-cyan-400/25 to-violet-500/20 blur-xl opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+        className="pointer-events-none absolute -right-8 -top-8 h-20 w-20 rounded-full bg-gradient-to-br from-lagoon-400/25 to-bloom-500/20 blur-xl opacity-70 transition-opacity duration-300 group-hover:opacity-100"
       />
       <div className="relative flex items-center gap-2.5">
         <span className="font-display text-2xs font-extrabold text-night-500">#{rank}</span>
@@ -114,17 +114,17 @@ function FeaturedTrendCard({ row }: { row: TrendingRow }) {
   return (
     <Link
       href={`/tokens/${row.mint}`}
-      className="tp-tilt group relative flex h-full flex-col justify-between gap-4 overflow-hidden rounded-3xl border border-transparent bg-gradient-to-br from-[#4C1D95] via-[#6D28D9] to-[#0E7490] p-6 text-white shadow-[0_24px_60px_-24px_rgba(109,40,217,0.65)]"
+      className="tp-tilt group relative flex h-full flex-col justify-between gap-4 overflow-hidden rounded-3xl border border-transparent bg-gradient-to-br from-[#170B45] via-[#201060] to-[#2A1068] p-6 text-white shadow-[0_24px_60px_-24px_rgba(109,40,217,0.65)]"
     >
-      <span aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-cyan-400/25 blur-2xl" />
-      <span aria-hidden className="pointer-events-none absolute -bottom-12 -left-8 h-36 w-36 rounded-full bg-fuchsia-500/25 blur-2xl" />
+      <span aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-lagoon-400/25 blur-2xl" />
+      <span aria-hidden className="pointer-events-none absolute -bottom-12 -left-8 h-36 w-36 rounded-full bg-bloom-500/25 blur-2xl" />
       <div className="relative flex items-start justify-between gap-3">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-2xs font-extrabold uppercase tracking-[0.14em] backdrop-blur-sm">
           <Icon name="flame" size={12} />
           Featured · Trending #1
         </span>
         {row.hot && (
-          <span className="rounded-full bg-orange-400/90 px-2 py-0.5 text-2xs font-extrabold text-[#2A1E4F]">HOT</span>
+          <span className="rounded-full bg-spark-400 px-2 py-0.5 text-2xs font-extrabold text-[#20124D]">HOT</span>
         )}
       </div>
       <div className="relative flex items-center gap-4">
@@ -251,10 +251,10 @@ interface ActivityEvent {
 
 const KIND_META: Record<string, { label: string; icon: string; tile: string }> = {
   intent_recorded: { label: "Launch prepared", icon: "clock", tile: "bg-night-800 text-night-400" },
-  submitted: { label: "Submitted", icon: "zap", tile: "bg-cyan-400/15 text-cyan-600 dark:text-cyan-300" },
-  confirmed: { label: "Confirmed", icon: "check", tile: "bg-violet-500/15 text-violet-600 dark:text-violet-300" },
+  submitted: { label: "Submitted", icon: "zap", tile: "bg-ice-400/15 text-ice-600 dark:text-ice-300" },
+  confirmed: { label: "Confirmed", icon: "check", tile: "bg-mint-500/15 text-mint-600 dark:text-mint-300" },
   curve_trading: { label: "Curve trading", icon: "trending", tile: "bg-mint-500/15 text-mint-600 dark:text-mint-300" },
-  graduation_detected: { label: "Graduating", icon: "zap", tile: "bg-fuchsia-500/15 text-fuchsia-600 dark:text-fuchsia-300" },
+  graduation_detected: { label: "Graduating", icon: "zap", tile: "bg-bloom-500/15 text-bloom-600 dark:text-bloom-300" },
   pool_verified: { label: "Pool verified", icon: "check", tile: "bg-up/15 text-up" },
   failed: { label: "Failed", icon: "alert", tile: "bg-down/15 text-down" },
   unresolved: { label: "Unresolved", icon: "alert", tile: "bg-warn/15 text-warn" },
@@ -369,7 +369,7 @@ export function LeaderboardTeaser() {
     return () => clearInterval(t);
   }, [load]);
 
-  const medals = ["from-yellow-400 to-amber-500", "from-slate-300 to-slate-400", "from-orange-400 to-amber-600"];
+  const medals = ["from-spark-400 to-spark-500", "from-slate-300 to-slate-400", "from-orange-400 to-amber-600"];
 
   return (
     <div className="rounded-3xl border border-night-700/70 bg-paper p-4 shadow-panel">
@@ -401,7 +401,7 @@ export function LeaderboardTeaser() {
                 className="tp-tilt group flex flex-col items-center gap-2 rounded-2xl border border-night-700 bg-night-850 p-3 text-center transition-all duration-200 hover:border-mint-500/40"
               >
                 <span
-                  className={`flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br ${medals[i]} font-display text-xs font-extrabold text-[#2A1E4F] shadow-glow-mint`}
+                  className={`flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br ${medals[i]} font-display text-xs font-extrabold text-[#20124D] shadow-glow-mint`}
                 >
                   {i + 1}
                 </span>
@@ -434,7 +434,7 @@ export function LaunchMiniCard({ token }: { token: TokenRowData }) {
     >
       <span
         aria-hidden
-        className="pointer-events-none absolute -left-8 -bottom-8 h-20 w-20 rounded-full bg-gradient-to-tr from-fuchsia-400/25 to-cyan-400/20 blur-xl opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+        className="pointer-events-none absolute -left-8 -bottom-8 h-20 w-20 rounded-full bg-gradient-to-tr from-bloom-400/25 to-lagoon-400/20 blur-xl opacity-70 transition-opacity duration-300 group-hover:opacity-100"
       />
       <div className="relative flex items-center gap-2.5">
         <ArtRing size={42}>
@@ -507,7 +507,7 @@ export function LatestLaunchesPreview() {
               </p>
               <Link
                 href="/create"
-                className="mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-violet-500 to-cyan-500 px-5 py-2.5 text-sm font-extrabold text-white shadow-glow-mint transition hover:brightness-110"
+                className="mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-bloom-500 to-lagoon-500 px-5 py-2.5 text-sm font-extrabold text-white shadow-glow-mint transition hover:brightness-110"
               >
                 Launch Token
               </Link>

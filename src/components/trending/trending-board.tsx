@@ -75,7 +75,7 @@ function ActivityBar({ buys, sells }: { buys: number; sells: number }) {
   return (
     <div className="h-1.5 w-full overflow-hidden rounded-full bg-night-700" title={`${buys} buys / ${sells} sells`}>
       <div
-        className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 transition-[width] duration-700"
+        className="h-full rounded-full bg-gradient-to-r from-lagoon-400 to-ice-400 transition-[width] duration-700"
         style={{ width: `${Math.max(6, Math.min(94, pct))}%` }}
       />
     </div>
@@ -87,10 +87,10 @@ function TrendCard({ row, rank, featured = false }: { row: TrendingRow; rank: nu
     return (
       <Link
         href={`/tokens/${row.mint}`}
-        className="tp-tilt group relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-transparent bg-gradient-to-br from-[#4C1D95] via-[#6D28D9] to-[#0E7490] p-6 text-white shadow-[0_24px_60px_-24px_rgba(109,40,217,0.65)]"
+        className="tp-tilt group relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-transparent bg-gradient-to-br from-[#170B45] via-[#201060] to-[#2A1068] p-6 text-white shadow-[0_24px_60px_-24px_rgba(109,40,217,0.65)]"
       >
-        <span aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-44 w-44 rounded-full bg-cyan-400/25 blur-2xl" />
-        <span aria-hidden className="pointer-events-none absolute -bottom-14 -left-10 h-40 w-40 rounded-full bg-fuchsia-500/25 blur-2xl" />
+        <span aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-44 w-44 rounded-full bg-lagoon-400/25 blur-2xl" />
+        <span aria-hidden className="pointer-events-none absolute -bottom-14 -left-10 h-40 w-40 rounded-full bg-bloom-500/25 blur-2xl" />
         <div className="relative flex items-start justify-between gap-3">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-2xs font-extrabold uppercase tracking-[0.14em] backdrop-blur-sm">
             <Icon name="flame" size={12} />
@@ -98,10 +98,10 @@ function TrendCard({ row, rank, featured = false }: { row: TrendingRow; rank: nu
           </span>
           <div className="flex items-center gap-1.5">
             {row.hot && (
-              <span className="rounded-full bg-orange-400/90 px-2 py-0.5 text-2xs font-extrabold text-[#2A1E4F]">HOT</span>
+              <span className="rounded-full bg-spark-400 px-2 py-0.5 text-2xs font-extrabold text-[#20124D]">HOT</span>
             )}
             {row.migrated && (
-              <span className="rounded-full bg-emerald-400/90 px-2 py-0.5 text-2xs font-extrabold text-[#2A1E4F]">MIGRATED</span>
+              <span className="rounded-full bg-emerald-400/90 px-2 py-0.5 text-2xs font-extrabold text-[#20124D]">MIGRATED</span>
             )}
           </div>
         </div>
@@ -156,12 +156,12 @@ function TrendCard({ row, rank, featured = false }: { row: TrendingRow; rank: nu
     >
       <span
         aria-hidden
-        className="pointer-events-none absolute -right-8 -top-8 h-20 w-20 rounded-full bg-gradient-to-br from-cyan-400/25 to-violet-500/20 blur-xl opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+        className="pointer-events-none absolute -right-8 -top-8 h-20 w-20 rounded-full bg-gradient-to-br from-lagoon-400/25 to-bloom-500/20 blur-xl opacity-70 transition-opacity duration-300 group-hover:opacity-100"
       />
       <div className="relative flex items-center gap-2.5">
         <span className="font-display text-2xs font-extrabold text-night-500">#{rank + 1}</span>
-        <span className="rounded-2xl bg-gradient-to-br from-violet-500/50 via-fuchsia-400/30 to-cyan-400/50 p-[2px] shadow-glow-mint">
-          <span className="block overflow-hidden rounded-[14px] bg-paper dark:bg-[#1D1442]">
+        <span className="rounded-2xl bg-gradient-to-br from-bloom-400/60 via-bloom-300/30 to-lagoon-400/60 p-[2px] shadow-glow-mint">
+          <span className="block overflow-hidden rounded-[14px] bg-paper dark:bg-[#181045]">
             <TokenImage imageUrl={row.imageUrl} symbol={row.symbol} size={44} />
           </span>
         </span>
@@ -289,7 +289,7 @@ export function TrendingBoard() {
               aria-pressed={tab === t.key}
               className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-2xs font-bold transition-all duration-200 ${
                 tab === t.key
-                  ? "border-transparent bg-gradient-to-br from-violet-500 to-cyan-500 text-white shadow-glow-mint"
+                  ? "border-transparent bg-gradient-to-br from-bloom-500 to-lagoon-500 text-white shadow-glow-mint"
                   : "border-night-700 bg-paper text-night-400 hover:border-mint-500/40 hover:text-ink"
               }`}
             >
@@ -307,7 +307,7 @@ export function TrendingBoard() {
                 aria-pressed={tf === t.key}
                 disabled={tab === "newest" || tab === "migrated"}
                 className={`rounded-lg px-2.5 py-1 text-2xs font-extrabold transition-colors duration-200 disabled:opacity-40 ${
-                  tf === t.key ? "bg-gradient-to-br from-violet-500 to-cyan-500 text-white" : "text-night-400 hover:text-ink"
+                  tf === t.key ? "bg-gradient-to-br from-bloom-500 to-lagoon-500 text-white" : "text-night-400 hover:text-ink"
                 }`}
               >
                 {t.label}

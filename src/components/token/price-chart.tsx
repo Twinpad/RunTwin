@@ -18,7 +18,7 @@ function chartPalette(isDark: boolean) {
         bg: "#0E1C32",
         grid: "#253A57",
         label: "#A6B5CA",
-        up: "#4ADE80",
+        up: "#98E8E0",
         down: "#F87171",
         line: "#5B9BFF",
         volUp: "rgba(74,222,128,0.25)",

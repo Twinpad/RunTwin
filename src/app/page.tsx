@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Hero3D } from "@/components/three/hero-3d";
+import { TwinBanner, TwinSparkle } from "@/components/brand/logo";
 import { LaunchPortals } from "@/components/home/launch-portals";
 import {
   TrendingUniversePreview,
@@ -27,13 +28,21 @@ export default function TwinPadHomePage() {
   const officialToken = officialTokenView(getOfficialTokenConfig());
   return (
     <div className="animate-fade-up space-y-8">
-      {/* Hero — the 3D launch universe */}
-      <section className="relative overflow-hidden rounded-3xl border border-deep/40 bg-gradient-to-br from-deep via-[#3B1D8F] to-[#155E9C] shadow-panel">
-        <Hero3D dark={false} />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_90%_at_50%_120%,rgba(6,182,212,0.22),transparent_60%)]" />
+      {/* Hero — the official TwinPad banner front and center, on the brand's
+          deep-indigo stage with the 3D universe drifting behind it. */}
+      <section className="tp-stage relative overflow-hidden rounded-4xl border border-deep/60 shadow-panel">
+        {/* 3D universe as a calm backdrop — dimmed + scrimmed so copy stays readable */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-40">
+          <Hero3D dark={false} />
+        </div>
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[560px] bg-[radial-gradient(58%_52%_at_50%_30%,rgba(23,11,69,0.62),transparent_74%)]" />
+        <div aria-hidden className="tp-stars pointer-events-none absolute inset-0 opacity-80" />
+        <div aria-hidden className="tp-halo pointer-events-none absolute -left-24 top-6 h-72 w-96 rounded-full opacity-70" />
+        <div aria-hidden className="tp-halo pointer-events-none absolute -right-20 bottom-0 h-80 w-[28rem] rounded-full opacity-80" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_90%_at_50%_120%,rgba(44,212,192,0.14),transparent_60%)]" />
         <div className="relative z-10 px-6 py-14 text-center sm:px-12 sm:py-20 lg:py-24">
           <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-2xs font-bold uppercase tracking-[0.18em] text-white backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 animate-pulse-soft rounded-full bg-cyan-300" />
+            <TwinSparkle size={11} color="#F8CC14" />
             Built on Solana · You always hold the keys
           </p>
           <h1 className="mx-auto max-w-3xl font-display text-5xl font-extrabold uppercase leading-[0.95] tracking-tight text-white sm:text-6xl lg:text-7xl">
@@ -52,7 +61,7 @@ export default function TwinPadHomePage() {
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/tokens"
-              className="inline-flex items-center gap-2 rounded-2xl bg-white px-7 py-3.5 text-sm font-extrabold text-[#2A1E4F] shadow-[0_14px_34px_-10px_rgba(255,255,255,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-sky-100"
+              className="inline-flex items-center gap-2 rounded-2xl bg-white px-7 py-3.5 text-sm font-extrabold text-[#20124D] shadow-[0_14px_34px_-10px_rgba(255,255,255,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-sky-100"
             >
               Explore Tokens
             </Link>
@@ -63,12 +72,32 @@ export default function TwinPadHomePage() {
               Launch Token
             </Link>
           </div>
+          {/* Official TwinPad banner — the brand stamp of the hero */}
+          <div className="relative mx-auto mt-10 w-full max-w-3xl">
+            <span aria-hidden className="tp-float absolute -left-6 -top-5 sm:-left-9 sm:-top-7">
+              <TwinSparkle size={22} color="#F8CC14" />
+            </span>
+            <span aria-hidden className="tp-float absolute -right-5 top-8 sm:-right-8" style={{ animationDelay: "-2.6s" }}>
+              <TwinSparkle size={14} color="#68E8F8" />
+            </span>
+            <span aria-hidden className="tp-halo absolute -inset-x-10 -bottom-12 top-1/3 rounded-full opacity-60" />
+            <div className="tp-banner-glow relative overflow-hidden rounded-3xl ring-1 ring-white/15">
+              <TwinBanner priority />
+            </div>
+          </div>
         </div>
       </section>
 
 
-      {/* Two launch stations */}
-      <LaunchPortals />
+      {/* Two launch stations — on the banner-indigo stage */}
+      <section aria-label="Launch destinations" className="tp-stage relative overflow-hidden rounded-4xl p-4 sm:p-6">
+        <div aria-hidden className="tp-stars pointer-events-none absolute inset-0 opacity-60" />
+        <div aria-hidden className="tp-halo pointer-events-none absolute -left-20 bottom-[-120px] h-72 w-96 rounded-full opacity-70" />
+        <div aria-hidden className="tp-halo pointer-events-none absolute -right-24 -top-24 h-72 w-96 rounded-full opacity-70" />
+        <div className="relative">
+          <LaunchPortals />
+        </div>
+      </section>
       <p className="text-center text-2xs leading-relaxed text-night-400">
         Pump.fun and Raydium run their own independent protocols. TwinPad
         builds each launch with the protocols&apos; official SDKs and isn&apos;t
@@ -79,7 +108,7 @@ export default function TwinPadHomePage() {
       <section aria-label="Trending preview">
         <div className="mb-4 flex items-end justify-between gap-3">
           <div>
-            <p className="mb-1.5 inline-flex items-center gap-1.5 rounded-full border border-mint-400/25 bg-gradient-to-r from-violet-500/10 to-cyan-400/10 px-3 py-1 text-2xs font-bold uppercase tracking-[0.16em] text-mint-600 dark:text-mint-300">
+            <p className="mb-1.5 inline-flex items-center gap-1.5 rounded-full border border-mint-400/25 bg-gradient-to-r from-bloom-500/10 to-lagoon-400/10 px-3 py-1 text-2xs font-bold uppercase tracking-[0.16em] text-mint-600 dark:text-mint-300">
               🔥 On the radar
             </p>
             <h2 className="font-display text-xl font-extrabold tracking-tight text-ink sm:text-2xl">
@@ -107,7 +136,7 @@ export default function TwinPadHomePage() {
       <section aria-label="Latest launches">
         <div className="mb-4 flex items-end justify-between gap-3">
           <div>
-            <p className="mb-1.5 inline-flex items-center gap-1.5 rounded-full border border-mint-400/25 bg-gradient-to-r from-violet-500/10 to-cyan-400/10 px-3 py-1 text-2xs font-bold uppercase tracking-[0.16em] text-mint-600 dark:text-mint-300">
+            <p className="mb-1.5 inline-flex items-center gap-1.5 rounded-full border border-mint-400/25 bg-gradient-to-r from-bloom-500/10 to-lagoon-400/10 px-3 py-1 text-2xs font-bold uppercase tracking-[0.16em] text-mint-600 dark:text-mint-300">
               🚀 Just lifted off
             </p>
             <h2 className="font-display text-xl font-extrabold tracking-tight text-ink sm:text-2xl">Fresh launches</h2>

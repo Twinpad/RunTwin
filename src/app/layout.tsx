@@ -47,14 +47,14 @@ export const metadata: Metadata = {
       "Pump.fun or Raydium LaunchLab? Pick your path, mint your token, and watch the ecosystem unfold around you — all in one playful corner of Solana.",
     siteName: "TwinPad",
     type: "website",
-    images: [{ url: "/twin-og.png", width: 1200, height: 630, alt: "TwinPad — One Platform. Two Ways to Launch." }],
+    images: [{ url: "/branding/og-default.png", width: 1200, height: 630, alt: "TwinPad — One Platform. Two Ways to Launch." }],
   },
 };
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F6F4FF" },
-    { media: "(prefers-color-scheme: dark)", color: "#150E33" },
+    { media: "(prefers-color-scheme: light)", color: "#F4F2FE" },
+    { media: "(prefers-color-scheme: dark)", color: "#120A34" },
   ],
   width: "device-width",
   initialScale: 1,

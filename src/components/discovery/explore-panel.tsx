@@ -157,7 +157,7 @@ function TokenCard({ token: t }: { token: DiscoveredToken }) {
       {/* candy corner wash — brighter on hover */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-12 -top-12 h-28 w-28 rounded-full bg-gradient-to-br from-violet-400/30 via-cyan-300/25 to-transparent opacity-60 blur-2xl transition-opacity duration-300 group-hover:opacity-100"
+        className="pointer-events-none absolute -right-12 -top-12 h-28 w-28 rounded-full bg-gradient-to-br from-bloom-400/30 via-lagoon-300/25 to-transparent opacity-60 blur-2xl transition-opacity duration-300 group-hover:opacity-100"
       />
 
       {/* header — artwork, identity, provenance */}

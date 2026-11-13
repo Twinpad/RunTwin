@@ -27,7 +27,7 @@ export function SectionHeading({
     <header className={`mb-5 flex flex-wrap items-end justify-between gap-3 ${className}`}>
       <div className="min-w-0">
         {eyebrow && (
-          <p className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-mint-400/25 bg-gradient-to-r from-violet-500/10 to-cyan-400/10 px-3 py-1 text-2xs font-bold uppercase tracking-[0.16em] text-mint-600 dark:text-mint-300">
+          <p className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-bloom-400/25 bg-gradient-to-r from-bloom-500/10 to-lagoon-400/10 px-3 py-1 text-2xs font-bold uppercase tracking-[0.16em] text-bloom-600 dark:text-bloom-300">
             {icon && <Icon name={icon} size={12} />}
             {eyebrow}
           </p>

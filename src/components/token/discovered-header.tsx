@@ -75,7 +75,7 @@ export function DiscoveredTokenHeader({ mint, socials }: { mint: string; socials
   const symbol = found?.symbol ?? provider?.symbol ?? "???";
 
   return (
-    <Card className="mb-4 overflow-hidden bg-gradient-to-br from-violet-500/8 via-transparent to-cyan-400/10">
+    <Card className="mb-4 overflow-hidden bg-gradient-to-br from-bloom-500/8 via-transparent to-lagoon-400/10">
       <div className="flex flex-wrap items-center gap-3">
         <span className="rounded-2xl p-[2px] shadow-glow-mint">
           <TokenImage imageUrl={found?.imageUrl ?? provider?.imageUrl ?? null} symbol={symbol} size={56} />

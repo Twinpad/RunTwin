@@ -83,7 +83,7 @@ export function LaunchMarket({ initialFilter = "all" }: { initialFilter?: Filter
               aria-pressed={filter === f.key}
               className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-2xs font-bold transition-all duration-200 ${
                 filter === f.key
-                  ? "border-transparent bg-gradient-to-br from-violet-500 to-cyan-500 text-white shadow-glow-mint"
+                  ? "border-transparent bg-gradient-to-br from-bloom-500 to-lagoon-500 text-white shadow-glow-mint"
                   : "border-night-700 bg-paper text-night-400 hover:border-mint-500/40 hover:text-ink"
               }`}
             >

@@ -33,7 +33,7 @@ interface MyLaunch extends TokenRowData {
 function StatTile({ label, value, icon }: { label: string; value: string | number; icon: string }) {
   return (
     <div className="tp-tilt rounded-2xl border border-night-700 bg-paper p-4 shadow-panel">
-      <span className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/15 to-cyan-400/15 text-mint-500">
+      <span className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-bloom-500/15 to-lagoon-400/15 text-mint-500">
         <Icon name={icon} size={15} />
       </span>
       <p className="font-mono text-xl font-bold text-ink">{value}</p>
@@ -141,7 +141,7 @@ export default function DashboardPage() {
         <div className="ml-auto flex items-center gap-2">
           <Link
             href="/create"
-            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-br from-violet-500 to-cyan-500 px-4 py-2 text-xs font-bold text-white shadow-glow-mint transition hover:brightness-110"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-br from-bloom-500 to-lagoon-500 px-4 py-2 text-xs font-bold text-white shadow-glow-mint transition hover:brightness-110"
           >
             <Icon name="plus" size={13} /> New launch
           </Link>
@@ -169,7 +169,7 @@ export default function DashboardPage() {
             aria-pressed={view === t.key}
             className={`inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-1.5 text-2xs font-bold transition-all duration-200 ${
               view === t.key
-                ? "border-transparent bg-gradient-to-br from-violet-500 to-cyan-500 text-white shadow-glow-mint"
+                ? "border-transparent bg-gradient-to-br from-bloom-500 to-lagoon-500 text-white shadow-glow-mint"
                 : "border-night-700 bg-paper text-night-400 hover:border-mint-500/40 hover:text-ink"
             }`}
           >

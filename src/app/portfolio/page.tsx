@@ -120,8 +120,8 @@ export default function PortfolioPage() {
       />
 
       {/* Wallet card */}
-      <div className="relative overflow-hidden rounded-3xl border border-transparent bg-gradient-to-br from-[#4C1D95] via-[#6D28D9] to-[#0E7490] p-6 text-white shadow-[0_24px_60px_-24px_rgba(109,40,217,0.65)]">
-        <span aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-cyan-400/25 blur-2xl" />
+      <div className="relative overflow-hidden rounded-3xl border border-transparent bg-gradient-to-br from-[#170B45] via-[#201060] to-[#2A1068] p-6 text-white shadow-[0_24px_60px_-24px_rgba(109,40,217,0.65)]">
+        <span aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-lagoon-400/25 blur-2xl" />
         <div className="relative flex flex-wrap items-center gap-4">
           <Identicon value={publicKey.toBase58()} size={56} />
           <div className="min-w-0">

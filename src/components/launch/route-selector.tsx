@@ -20,15 +20,15 @@ type AvailabilityMap = Partial<Record<LaunchRoute, RouteAvailability>>;
 function MiniPortalArt({ route }: { route: LaunchRoute }) {
   const ring =
     route === "pump"
-      ? "from-cyan-400 via-teal-300 to-emerald-400"
-      : "from-violet-500 via-fuchsia-400 to-pink-400";
+      ? "from-lagoon-400 via-lagoon-300 to-lagoon-500"
+      : "from-bloom-400 via-bloom-300 to-bloom-500";
   return (
     <span aria-hidden className="relative inline-flex h-14 w-14 shrink-0 items-center justify-center">
       <span
         className={`tp-portal-spin absolute inset-0 rounded-full bg-gradient-to-br ${ring} opacity-90`}
         style={{ padding: 4 }}
       >
-        <span className="block h-full w-full rounded-full bg-paper dark:bg-[#1D1442]" />
+        <span className="block h-full w-full rounded-full bg-paper dark:bg-[#181045]" />
       </span>
       <span className={`tp-portal-spin-rev absolute inset-[26%] rounded-full bg-gradient-to-tr ${ring} opacity-70`} />
       <span className="relative font-display text-xs font-extrabold text-ink dark:text-white">

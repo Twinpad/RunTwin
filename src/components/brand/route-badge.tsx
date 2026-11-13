@@ -16,12 +16,14 @@ export function normalizeRoute(route: string): DbRoute {
   return route === "launchlab" ? "LAUNCHLAB_CPMM" : "PUMP_PUMPSWAP";
 }
 
-/** Reusable launch-route badge — consistent across the whole product. */
+/** Reusable launch-route badge — consistent across the whole product.
+ *  Route colors come from the official TwinPad artwork: the lagoon ring for
+ *  the Pump.fun path, the orchid ring for the Raydium LaunchLab path. */
 export function RouteBadge({ route }: { route: string | null | undefined }) {
   if (!route) return <Badge tone="neutral">route unknown</Badge>;
   const isPump = route === "PUMP_PUMPSWAP" || route === "pump";
   return (
-    <Badge tone={isPump ? "mint" : "ice"}>
+    <Badge tone={isPump ? "lagoon" : "bloom"}>
       {isPump ? "Pump → PumpSwap" : "LaunchLab → CPMM"}
     </Badge>
   );

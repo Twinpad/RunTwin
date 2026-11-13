@@ -114,7 +114,7 @@ function DockLink({
         aria-hidden
         className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all duration-200 ${
           active
-            ? "bg-gradient-to-br from-violet-500 via-fuchsia-500 to-cyan-400 text-white shadow-[0_8px_20px_-6px_rgba(139,92,246,0.65)]"
+            ? "bg-gradient-to-br from-bloom-500 via-bloom-400 to-lagoon-400 text-white shadow-[0_8px_20px_-6px_rgba(196,69,232,0.65)]"
             : "group-hover/item:scale-105"
         }`}
       >
@@ -127,13 +127,13 @@ function DockLink({
       {active && (
         <span
           aria-hidden
-          className="tp-pop absolute -left-[13px] top-1/2 h-6 w-1.5 -translate-y-1/2 rounded-full bg-gradient-to-b from-violet-400 to-cyan-400 shadow-[0_0_12px_rgba(139,92,246,0.8)]"
+          className="tp-pop absolute -left-[13px] top-1/2 h-6 w-1.5 -translate-y-1/2 rounded-full bg-gradient-to-b from-bloom-400 to-lagoon-400 shadow-[0_0_12px_rgba(196,69,232,0.8)]"
         />
       )}
       {!expanded && active && (
         <span
           aria-hidden
-          className="absolute -bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-gradient-to-r from-violet-400 to-cyan-400"
+          className="absolute -bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-gradient-to-r from-bloom-400 to-lagoon-400"
         />
       )}
     </Link>
@@ -192,7 +192,7 @@ function DesktopDock() {
       {/* ambient 3D glow */}
       <span
         aria-hidden
-        className="pointer-events-none absolute -inset-2 -z-10 rounded-[32px] bg-gradient-to-b from-violet-500/12 via-transparent to-cyan-400/12 blur-xl"
+        className="pointer-events-none absolute -inset-2 -z-10 rounded-[32px] bg-gradient-to-b from-bloom-500/12 via-transparent to-lagoon-400/12 blur-xl"
       />
       <Link href="/" aria-label="TwinPad home" className="mb-1 flex items-center gap-2.5 px-1 pt-1">
         <TwinMark size={expanded ? 30 : 34} className="transition-all duration-300" />
@@ -261,7 +261,7 @@ function MobileDock() {
       >
         <span
           aria-hidden
-          className="pointer-events-none absolute -inset-1.5 -z-10 rounded-[30px] bg-gradient-to-t from-violet-500/12 via-transparent to-cyan-400/10 blur-lg"
+          className="pointer-events-none absolute -inset-1.5 -z-10 rounded-[30px] bg-gradient-to-t from-bloom-500/12 via-transparent to-lagoon-400/10 blur-lg"
         />
         {MOBILE_PRIMARY.map((item, i) => {
           const active = isActive(item, pathname, query);
@@ -276,9 +276,9 @@ function MobileDock() {
               <span
                 className={`flex h-10 w-10 items-center justify-center rounded-2xl transition-all duration-200 ${
                   center
-                    ? "bg-gradient-to-br from-violet-500 via-fuchsia-500 to-cyan-400 text-white shadow-[0_10px_24px_-6px_rgba(139,92,246,0.7)] ring-4 ring-paper dark:ring-[#1D1442]"
+                    ? "bg-gradient-to-br from-bloom-500 via-bloom-400 to-lagoon-400 text-white shadow-[0_10px_24px_-6px_rgba(196,69,232,0.7)] ring-4 ring-paper dark:ring-[#181045]"
                     : active
-                      ? "bg-gradient-to-br from-violet-500 to-cyan-400 text-white shadow-glow-mint"
+                      ? "bg-gradient-to-br from-bloom-500 to-lagoon-400 text-white shadow-glow-mint"
                       : "text-night-400"
                 }`}
               >
@@ -338,13 +338,13 @@ function MobileDock() {
                           aria-current={active ? "page" : undefined}
                           className={`flex items-center gap-2.5 rounded-2xl border p-3 transition-all duration-200 ${
                             active
-                              ? "border-transparent bg-gradient-to-br from-violet-500/10 to-cyan-400/10 text-ink ring-1 ring-mint-400/40"
+                              ? "border-transparent bg-gradient-to-br from-bloom-500/10 to-lagoon-400/10 text-ink ring-1 ring-mint-400/40"
                               : "border-night-700 bg-night-850 text-night-400 hover:text-ink"
                           }`}
                         >
                           <span
                             className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
-                              active ? "bg-gradient-to-br from-violet-500 to-cyan-400 text-white" : "bg-night-800"
+                              active ? "bg-gradient-to-br from-bloom-500 to-lagoon-400 text-white" : "bg-night-800"
                             }`}
                           >
                             <Icon name={item.icon} size={16} />

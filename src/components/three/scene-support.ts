@@ -15,26 +15,26 @@
 import { useEffect, useState } from "react";
 
 export const TP3D = {
-  purple: "#8B5CF6",
-  purpleDeep: "#6D28D9",
-  cyan: "#22D3EE",
-  cyanDeep: "#06B6D4",
-  pink: "#F472B6",
-  orange: "#FB923C",
-  yellow: "#FDE047",
-  gold: "#F59E0B",
-  sky: "#7DD3FC",
-  grass: "#7EE0A3",
-  rock: "#A78BFA",
+  purple: "#A855F7", // halo violet
+  purpleDeep: "#7C3AED",
+  cyan: "#2CD4C0", // official lagoon ring
+  cyanDeep: "#16B3A0",
+  pink: "#D848F0", // official orchid ring
+  orange: "#F8CC14", // official spark gold
+  yellow: "#F8CC14",
+  gold: "#F8CC14",
+  sky: "#68E8F8", // official sky-cyan satellites
+  grass: "#2CD4C0",
+  rock: "#C4B5FD",
   cloud: "#FFFFFF",
-  ink: "#2A1E4F",
-  flame: "#FB923C",
+  ink: "#20124D",
+  flame: "#F8CC14",
 } as const;
 
 /** Portal colorways — Route 01 (Pump.fun) vs Route 02 (LaunchLab). */
 export const PORTAL_COLORS = {
-  pump: { ring: TP3D.cyan, glow: TP3D.cyan, accent: "#4ADE80" },
-  launchlab: { ring: TP3D.purple, glow: TP3D.purple, accent: TP3D.pink },
+  pump: { ring: TP3D.cyan, glow: TP3D.cyan, accent: "#98E8E0" },
+  launchlab: { ring: TP3D.pink, glow: TP3D.pink, accent: TP3D.sky },
 } as const;
 
 export type PortalVariant = keyof typeof PORTAL_COLORS;

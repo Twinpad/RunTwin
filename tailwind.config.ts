@@ -62,6 +62,27 @@ const config: Config = {
         // Performance colors (verified positive/negative only — data, not brand)
         up: v("up"),
         down: v("down"),
+        // Official brand families (from the TwinPad logo/banner artwork)
+        lagoon: {
+          300: v("l300"), // light teal highlight
+          400: v("l400"), // #2CD4C0 — official ring 01
+          500: v("l500"),
+          600: v("l600"),
+          700: v("l700"),
+        },
+        bloom: {
+          300: v("b300"), // light orchid highlight
+          400: v("b400"), // #D848F0 — official ring 02 / "Pad"
+          500: v("b500"),
+          600: v("b600"),
+          700: v("b700"),
+        },
+        spark: {
+          300: v("k300"), // light gold
+          400: v("k400"), // #F8CC14 — official sparkle star
+          500: v("k500"),
+          600: v("k600"),
+        },
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],

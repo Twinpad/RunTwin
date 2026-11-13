@@ -2,8 +2,8 @@
 
 import { ReactNode } from "react";
 
-/* TwinPad "Electric Blue Launch Studio" design-system primitives.
-   Light-first: white surfaces, pale tints, cobalt accents, ink typography. */
+/* TwinPad design-system primitives — official brand palette.
+   Light-first: white surfaces, indigo tints, violet/orchid accents. */
 
 export function Card({
   children,
@@ -75,12 +75,15 @@ export function Badge({
   tone = "neutral",
 }: {
   children: ReactNode;
-  tone?: "neutral" | "mint" | "ice" | "warn" | "danger" | "success";
+  tone?: "neutral" | "mint" | "ice" | "lagoon" | "bloom" | "spark" | "warn" | "danger" | "success";
 }) {
   const tones = {
     neutral: "border-night-700 bg-night-800 text-night-400",
     mint: "border-mint-500/25 bg-sky-50 text-mint-700",
     ice: "border-sky-200 bg-sky-100/70 text-mint-600",
+    lagoon: "border-lagoon-500/30 bg-lagoon-300/20 text-lagoon-700 dark:border-lagoon-400/30 dark:bg-lagoon-400/10 dark:text-lagoon-300",
+    bloom: "border-bloom-500/30 bg-bloom-300/20 text-bloom-700 dark:border-bloom-400/30 dark:bg-bloom-400/10 dark:text-bloom-300",
+    spark: "border-spark-500/30 bg-spark-300/20 text-spark-600 dark:border-spark-400/30 dark:bg-spark-400/10 dark:text-spark-300",
     warn: "border-warn/30 bg-warn/10 text-warn",
     danger: "border-danger/25 bg-danger/5 text-danger",
     success: "border-up/30 bg-up/10 text-up",
@@ -166,19 +169,20 @@ export function EmptyState({
 }) {
   return (
     <div className="flex flex-col items-center rounded-xl border border-dashed border-night-600 bg-paper/60 px-6 py-14 text-center">
-      {/* Branded empty state — Twinny, the TwinPad mascot (inline SVG) */}
+      {/* Branded empty state — Twinny, the TwinPad mascot (inline SVG) in
+          the official palette: indigo body, lagoon + orchid eyes, spark gem. */}
       <svg viewBox="0 0 120 120" aria-hidden="true" className="mb-4 h-14 w-14 opacity-95">
-        <rect x="34" y="76" width="15" height="26" rx="7.5" fill="#8B5CF6" />
-        <rect x="71" y="76" width="15" height="26" rx="7.5" fill="#8B5CF6" />
-        <path d="M42 100 q 5 14 10 0zM68 100 q 5 14 10 0z" fill="#FB923C" opacity="0.85" />
-        <circle cx="60" cy="58" r="36" fill="#F5F3FF" stroke="#E5DEFA" strokeWidth="2" />
-        <ellipse cx="60" cy="54" rx="18" ry="14" fill="#2A1E4F" />
-        <circle cx="53" cy="52" r="3.4" fill="#22D3EE" />
-        <circle cx="67" cy="52" r="3.4" fill="#22D3EE" />
-        <circle cx="42" cy="66" r="4.5" fill="#F472B6" opacity="0.8" />
-        <circle cx="78" cy="66" r="4.5" fill="#F472B6" opacity="0.8" />
-        <line x1="60" y1="22" x2="60" y2="12" stroke="#8B5CF6" strokeWidth="3" />
-        <circle cx="60" cy="10" r="4.5" fill="#22D3EE" />
+        <rect x="34" y="76" width="15" height="26" rx="7.5" fill="#201060" />
+        <rect x="71" y="76" width="15" height="26" rx="7.5" fill="#201060" />
+        <path d="M42 100 q 5 14 10 0zM68 100 q 5 14 10 0z" fill="#2CD4C0" opacity="0.85" />
+        <circle cx="60" cy="58" r="36" fill="#EFEBFD" stroke="#E3DCFA" strokeWidth="2" />
+        <ellipse cx="60" cy="54" rx="18" ry="14" fill="#170B45" />
+        <circle cx="53" cy="52" r="3.4" fill="#2CD4C0" />
+        <circle cx="67" cy="52" r="3.4" fill="#D848F0" />
+        <circle cx="42" cy="66" r="4.5" fill="#D848F0" opacity="0.8" />
+        <circle cx="78" cy="66" r="4.5" fill="#2CD4C0" opacity="0.8" />
+        <line x1="60" y1="22" x2="60" y2="12" stroke="#201060" strokeWidth="3" />
+        <path d="M60 6 L61.6 10.4 L66 12 L61.6 13.6 L60 18 L58.4 13.6 L54 12 L58.4 10.4 Z" fill="#F8CC14" />
       </svg>
       <h3 className="font-display text-lg font-semibold text-ink">{title}</h3>
       <p className="mt-1 max-w-md text-sm text-night-400">{description}</p>

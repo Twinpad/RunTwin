@@ -33,7 +33,7 @@ interface CreatorRow {
 }
 
 const METALS = [
-  { ring: "from-yellow-300 via-amber-400 to-amber-600", chip: "🥇", glow: "shadow-[0_14px_36px_-12px_rgba(245,158,11,0.7)]", height: "h-24" },
+  { ring: "from-spark-300 via-spark-400 to-spark-500", chip: "🥇", glow: "shadow-[0_14px_36px_-12px_rgba(248,204,20,0.65)]", height: "h-24" },
   { ring: "from-slate-200 via-slate-300 to-slate-400", chip: "🥈", glow: "shadow-[0_14px_36px_-14px_rgba(148,163,184,0.7)]", height: "h-16" },
   { ring: "from-orange-300 via-amber-500 to-orange-600", chip: "🥉", glow: "shadow-[0_14px_36px_-14px_rgba(234,124,58,0.7)]", height: "h-12" },
 ];
@@ -60,10 +60,10 @@ function Podium({ rows }: { rows: CreatorRow[] }) {
               className={`tp-tilt flex w-full flex-col items-center justify-start gap-1 rounded-t-2xl border border-night-700/60 bg-gradient-to-b ${m.ring} p-3 ${m.height} ${m.glow} transition-transform duration-300 group-hover:-translate-y-1`}
             >
               <span className="text-lg">{m.chip}</span>
-              <span className="font-display text-2xl font-extrabold text-[#2A1E4F]">{row.launches}</span>
-              <span className="text-2xs font-bold uppercase tracking-wider text-[#2A1E4F]/80">launches</span>
+              <span className="font-display text-2xl font-extrabold text-[#20124D]">{row.launches}</span>
+              <span className="text-2xs font-bold uppercase tracking-wider text-[#20124D]/80">launches</span>
               {row.graduated > 0 && (
-                <span className="rounded-full bg-[#2A1E4F]/15 px-2 py-0.5 text-2xs font-bold text-[#2A1E4F]">
+                <span className="rounded-full bg-[#20124D]/15 px-2 py-0.5 text-2xs font-bold text-[#20124D]">
                   {row.graduated} graduated
                 </span>
               )}
@@ -246,7 +246,7 @@ function TokenBoard({ tab }: { tab: TrendingTab }) {
             >
               {i + 1}
             </span>
-            <span className="rounded-xl bg-gradient-to-br from-violet-500/40 to-cyan-400/40 p-[2px]">
+            <span className="rounded-xl bg-gradient-to-br from-bloom-400/50 to-lagoon-400/50 p-[2px]">
               <TokenImage imageUrl={r.imageUrl} symbol={r.symbol} size={40} />
             </span>
             <span className="min-w-0 flex-1">
@@ -289,7 +289,7 @@ export function LeaderboardArena() {
           aria-pressed={board === "creators"}
           className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-2xs font-bold transition-all duration-200 ${
             board === "creators"
-              ? "border-transparent bg-gradient-to-br from-violet-500 to-cyan-500 text-white shadow-glow-mint"
+              ? "border-transparent bg-gradient-to-br from-bloom-500 to-lagoon-500 text-white shadow-glow-mint"
               : "border-night-700 bg-paper text-night-400 hover:border-mint-500/40 hover:text-ink"
           }`}
         >
@@ -303,7 +303,7 @@ export function LeaderboardArena() {
             aria-pressed={board === t.key}
             className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-2xs font-bold transition-all duration-200 ${
               board === t.key
-                ? "border-transparent bg-gradient-to-br from-violet-500 to-cyan-500 text-white shadow-glow-mint"
+                ? "border-transparent bg-gradient-to-br from-bloom-500 to-lagoon-500 text-white shadow-glow-mint"
                 : "border-night-700 bg-paper text-night-400 hover:border-mint-500/40 hover:text-ink"
             }`}
           >

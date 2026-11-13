@@ -81,12 +81,12 @@ function PulseCard({ row }: { row: TrendingRow }) {
       <span
         aria-hidden
         className={`pointer-events-none absolute inset-x-0 top-0 h-[3px] ${
-          na ? "bg-night-600" : up ? "bg-gradient-to-r from-emerald-400 to-cyan-400" : "bg-gradient-to-r from-rose-400 to-fuchsia-400"
+          na ? "bg-night-600" : up ? "bg-gradient-to-r from-lagoon-400 to-ice-400" : "bg-gradient-to-r from-rose-400 to-bloom-400"
         }`}
       />
       <div className="flex items-center gap-2.5">
-        <span className="rounded-xl bg-gradient-to-br from-violet-500/50 to-cyan-400/50 p-[2px]">
-          <span className="block overflow-hidden rounded-[10px] bg-paper dark:bg-[#1D1442]">
+        <span className="rounded-xl bg-gradient-to-br from-bloom-400/60 to-lagoon-400/60 p-[2px]">
+          <span className="block overflow-hidden rounded-[10px] bg-paper dark:bg-[#181045]">
             <TokenImage imageUrl={row.imageUrl} symbol={row.symbol} size={38} />
           </span>
         </span>
@@ -217,10 +217,10 @@ interface ActivityEvent {
 
 const KIND_META: Record<string, { label: string; icon: string; tile: string }> = {
   intent_recorded: { label: "Launch prepared", icon: "clock", tile: "bg-night-800 text-night-400" },
-  submitted: { label: "Submitted", icon: "zap", tile: "bg-cyan-400/15 text-cyan-600 dark:text-cyan-300" },
-  confirmed: { label: "Confirmed", icon: "check", tile: "bg-violet-500/15 text-violet-600 dark:text-violet-300" },
+  submitted: { label: "Submitted", icon: "zap", tile: "bg-ice-400/15 text-ice-600 dark:text-ice-300" },
+  confirmed: { label: "Confirmed", icon: "check", tile: "bg-mint-500/15 text-mint-600 dark:text-mint-300" },
   curve_trading: { label: "Curve trading", icon: "trending", tile: "bg-mint-500/15 text-mint-600 dark:text-mint-300" },
-  graduation_detected: { label: "Graduation detected", icon: "zap", tile: "bg-fuchsia-500/15 text-fuchsia-600 dark:text-fuchsia-300" },
+  graduation_detected: { label: "Graduation detected", icon: "zap", tile: "bg-bloom-500/15 text-bloom-600 dark:text-bloom-300" },
   pool_verified: { label: "Pool verified", icon: "check", tile: "bg-up/15 text-up" },
   failed: { label: "Failed", icon: "alert", tile: "bg-down/15 text-down" },
   unresolved: { label: "Unresolved", icon: "alert", tile: "bg-warn/15 text-warn" },

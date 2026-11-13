@@ -166,7 +166,7 @@ export function Topbar(_props: { onMenu?: () => void }) {
     <header className="sticky top-2 z-30 mx-auto mb-4 flex max-w-[1560px] items-center gap-2 rounded-2xl border border-night-700/60 bg-paper/85 px-3 py-2 shadow-panel backdrop-blur-xl sm:mx-3 sm:gap-3">
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 rounded-2xl bg-gradient-to-r from-violet-500/8 via-transparent to-cyan-400/8"
+        className="pointer-events-none absolute inset-0 -z-10 rounded-2xl bg-gradient-to-r from-bloom-500/8 via-transparent to-lagoon-400/8"
       />
       <Link href="/" aria-label="TwinPad home" className="flex shrink-0 items-center gap-2">
         <span className="sm:hidden">
@@ -181,7 +181,7 @@ export function Topbar(_props: { onMenu?: () => void }) {
         <NetworkIndicator />
         <Link
           href="/create"
-          className="hidden items-center gap-1.5 rounded-xl bg-gradient-to-br from-violet-500 to-cyan-500 px-3 py-1.5 text-xs font-bold text-white shadow-glow-mint transition hover:brightness-110 sm:flex"
+          className="hidden items-center gap-1.5 rounded-xl bg-gradient-to-br from-bloom-500 to-lagoon-500 px-3 py-1.5 text-xs font-bold text-white shadow-glow-mint transition hover:brightness-110 sm:flex"
         >
           <Icon name="plus" size={13} />
           Launch

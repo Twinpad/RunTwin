@@ -3,59 +3,86 @@
 @tailwind utilities;
 
 /*
- * TwinPad "Candy Cosmos" theme — RGB channel triplets consumed by Tailwind
- * tokens (see tailwind.config.ts). :root = Light (lavender, default),
- * .dark = Midnight Arcade. The .dark class is applied pre-paint by the
- * inline bootstrap script in layout.tsx, so the correct theme renders
- * without flashing.
+ * TwinPad official brand theme — derived directly from the supplied logo &
+ * banner artwork (Twinpad Logo folder, mirrored into public/branding).
  *
- * Token NAMES are stable API (night/mint/ice/sky/deep/ink/paper/pale) —
- * their VALUES carry the TwinPad identity: electric purple + bright cyan
- * on soft lavender, with pink/orange/yellow as supporting candy accents.
+ *   Deep indigo stage   #170B45 / #201060   (banner plate + halo ellipse)
+ *   Lagoon teal ring    #2CD4C0             (ring 01 — Pump.fun path)
+ *   Orchid ring         #D848F0             (ring 02 — LaunchLab path + "Pad")
+ *   Spark gold          #F8CC14             (the sparkle star)
+ *   Sky cyan            #68E8F8             (tagline + satellite dots)
+ *
+ * :root = Light ("Indigo Day") · .dark = Dark ("Midnight Orbit").
+ * The .dark class is applied pre-paint by the inline bootstrap script in
+ * layout.tsx, so the correct theme renders without flashing.
+ *
+ * Token NAMES are stable API (night/mint/ice/lagoon/bloom/spark/sky/deep/
+ * ink/paper/pale) — their VALUES carry the official TwinPad identity.
  */
 :root {
   color-scheme: light;
-  /* Surfaces & neutrals — lavender-tinted, never plain gray */
-  --tp-n950: 246 244 255; /* #F6F4FF page background */
+  /* Surfaces & neutrals — indigo-tinted, never plain gray */
+  --tp-n950: 244 242 254; /* #F4F2FE page background */
   --tp-n900: 255 255 255; /* #FFFFFF chrome surfaces */
   --tp-n850: 255 255 255; /* #FFFFFF cards */
-  --tp-n800: 241 237 254; /* #F1EDFE recessed tint */
-  --tp-n700: 229 222 250; /* #E5DEFA borders */
-  --tp-n600: 214 201 246; /* #D6C9F6 hover borders */
+  --tp-n800: 240 236 254; /* #F0ECFE recessed tint */
+  --tp-n700: 227 220 250; /* #E3DCFA borders */
+  --tp-n600: 210 197 245; /* #D2C5F5 hover borders */
   --tp-n500: 167 155 200; /* #A79BC8 faint text */
   --tp-n400: 111 102 137; /* #6F6689 secondary text */
-  /* Electric purple (primary) */
+  /* Violet (halo-violet family — primary UI accent) */
   --tp-m300: 196 181 253; /* #C4B5FD */
-  --tp-m400: 139 92 246; /* #8B5CF6 */
+  --tp-m400: 157 92 240; /* #9D5CF0 */
   --tp-m500: 124 58 237; /* #7C3AED */
   --tp-m600: 109 40 217; /* #6D28D9 */
   --tp-m700: 91 33 182; /* #5B21B6 */
-  /* Bright cyan (highlights) */
-  --tp-i300: 165 243 252; /* #A5F3FC */
-  --tp-i400: 103 232 249; /* #67E8F9 */
-  --tp-i500: 6 182 212; /* #06B6D4 */
-  --tp-i600: 8 145 178; /* #0891B2 */
+  /* Sky cyan (banner tagline family) */
+  --tp-i300: 185 239 252; /* #B9EFFC */
+  --tp-i400: 69 189 232; /* #45BDE8 */
+  --tp-i500: 14 150 196; /* #0E96C4 */
+  --tp-i600: 11 122 163; /* #0B7AA3 */
+  /* Lagoon teal (official ring 01) */
+  --tp-l300: 143 232 220; /* #8FE8DC */
+  --tp-l400: 44 212 192; /* #2CD4C0 official */
+  --tp-l500: 22 179 160; /* #16B3A0 */
+  --tp-l600: 16 146 131; /* #109283 */
+  --tp-l700: 12 115 101; /* #0C7365 */
+  /* Orchid (official ring 02 + "Pad" wordmark) */
+  --tp-b300: 240 181 250; /* #F0B5FA */
+  --tp-b400: 216 72 240; /* #D848F0 official */
+  --tp-b500: 188 47 214; /* #BC2FD6 */
+  --tp-b600: 156 36 180; /* #9C24B4 */
+  --tp-b700: 122 28 143; /* #7A1C8F */
+  /* Spark gold (official sparkle star) */
+  --tp-k300: 255 223 107; /* #FFDF6B */
+  --tp-k400: 248 204 20; /* #F8CC14 official */
+  --tp-k500: 217 169 8; /* #D9A908 */
+  --tp-k600: 168 124 5; /* #A87C05 */
   /* Typography & surfaces */
-  --tp-ink: 42 30 79; /* #2A1E4F */
+  --tp-ink: 32 18 77; /* #20124D brand-indigo typography */
   --tp-paper: 255 255 255;
-  --tp-pale: 246 244 255;
-  /* Lavender chip tints */
-  --tp-s50: 244 241 255; /* #F4F1FF */
-  --tp-s100: 234 228 253; /* #EAE4FD */
-  --tp-s200: 216 203 250; /* #D8CBFA */
-  /* Deep stage sections & status */
-  --tp-deep: 76 29 149; /* #4C1D95 */
+  --tp-pale: 244 242 254;
+  /* Indigo chip tints */
+  --tp-s50: 243 240 254; /* #F3F0FE */
+  --tp-s100: 233 225 253; /* #E9E1FD */
+  --tp-s200: 213 198 248; /* #D5C6F8 */
+  /* Deep stage sections — the official banner plate indigo */
+  --tp-deep: 23 11 69; /* #170B45 official */
   --tp-danger: 225 29 72; /* #E11D48 */
   --tp-warn: 217 119 6; /* #D97706 */
   --tp-up: 5 150 105; /* #059669 */
   --tp-down: 224 82 82; /* #E05252 */
-  /* Elevation — soft purple-tinted candy shadows */
-  --tp-shadow-panel: 0 2px 6px rgba(42, 30, 79, 0.06), 0 16px 36px -18px rgba(124, 58, 237, 0.18);
-  --tp-shadow-glow: 0 2px 6px rgba(124, 58, 237, 0.12), 0 10px 26px -8px rgba(124, 58, 237, 0.4);
-  --tp-shadow-glow-strong: 0 12px 30px -10px rgba(6, 182, 212, 0.45);
+  /* Elevation — soft indigo-tinted shadows */
+  --tp-shadow-panel: 0 2px 6px rgba(32, 18, 77, 0.06), 0 16px 36px -18px rgba(124, 58, 237, 0.18);
+  --tp-shadow-glow: 0 2px 6px rgba(124, 58, 237, 0.12), 0 10px 26px -8px rgba(168, 60, 232, 0.4);
+  --tp-shadow-glow-strong: 0 12px 30px -10px rgba(44, 212, 192, 0.45);
+  /* Signature headline gradient — ring 01 → violet → ring 02 */
+  --tp-grad-a: 14 156 139; /* #0E9C8B */
+  --tp-grad-b: 124 58 237; /* #7C3AED */
+  --tp-grad-c: 188 47 214; /* #BC2FD6 */
   /* Detail */
-  --tp-row: 42 30 79; /* table separators */
-  --tp-sb: 216 203 250; /* scrollbar thumb */
+  --tp-row: 32 18 77; /* table separators */
+  --tp-sb: 213 198 248; /* scrollbar thumb */
   --tp-sb-hover: 189 172 244;
   --tp-focus: 124 58 237;
   --background: rgb(var(--tp-pale));
@@ -64,49 +91,70 @@
 
 .dark {
   color-scheme: dark;
-  /* Midnight Arcade — deep violet-navy, never a flat gray inversion */
-  --tp-n950: 21 14 51; /* #150E33 page background */
-  --tp-n900: 29 20 66; /* #1D1442 chrome surfaces */
-  --tp-n850: 29 20 66; /* #1D1442 cards */
-  --tp-n800: 38 27 87; /* #261B57 elevated/hover */
-  --tp-n700: 58 43 125; /* #3A2B7D borders */
-  --tp-n600: 76 58 153; /* #4C3A99 hover borders */
+  /* Midnight Orbit — the official banner indigo, never a flat gray inversion */
+  --tp-n950: 18 10 52; /* #120A34 page background */
+  --tp-n900: 24 16 69; /* #181045 chrome surfaces */
+  --tp-n850: 26 17 80; /* #1A1150 cards */
+  --tp-n800: 36 23 99; /* #241763 elevated/hover */
+  --tp-n700: 53 33 126; /* #35217E borders */
+  --tp-n600: 71 45 160; /* #472DA0 hover borders */
   --tp-n500: 142 130 187; /* #8E82BB faint text */
   --tp-n400: 181 169 222; /* #B5A9DE secondary text */
-  /* Brighter purple for dark-surface contrast */
-  --tp-m300: 196 181 253;
-  --tp-m400: 167 139 250; /* #A78BFA */
-  --tp-m500: 139 92 246; /* #8B5CF6 */
-  --tp-m600: 124 58 237;
-  --tp-m700: 196 181 253;
-  /* Cyan stays luminous */
-  --tp-i300: 165 243 252;
-  --tp-i400: 103 232 249;
-  --tp-i500: 34 211 238; /* #22D3EE */
-  --tp-i600: 6 182 212;
+  /* Violet family (halo-violet) */
+  --tp-m300: 212 194 251; /* #D4C2FB */
+  --tp-m400: 183 139 247; /* #B78BF7 */
+  --tp-m500: 157 107 242; /* #9D6BF2 */
+  --tp-m600: 132 83 221; /* #8453DD */
+  --tp-m700: 212 194 251;
+  /* Sky cyan stays luminous */
+  --tp-i300: 165 240 252; /* #A5F0FC */
+  --tp-i400: 104 232 248; /* #68E8F8 official */
+  --tp-i500: 63 194 234; /* #3FC2EA */
+  --tp-i600: 42 169 216; /* #2AA9D8 */
+  /* Lagoon teal — official ring 01 */
+  --tp-l300: 152 232 224; /* #98E8E0 official highlight */
+  --tp-l400: 44 212 192; /* #2CD4C0 official */
+  --tp-l500: 38 194 175; /* #26C2AF */
+  --tp-l600: 31 164 146; /* #1FA492 */
+  --tp-l700: 152 232 224;
+  /* Orchid — official ring 02 */
+  --tp-b300: 236 164 248; /* #ECA4F8 official highlight */
+  --tp-b400: 216 72 240; /* #D848F0 official */
+  --tp-b500: 196 69 232; /* #C445E8 */
+  --tp-b600: 168 51 204; /* #A833CC */
+  --tp-b700: 236 164 248;
+  /* Spark gold — official sparkle star */
+  --tp-k300: 255 227 122; /* #FFE37A */
+  --tp-k400: 248 204 20; /* #F8CC14 official */
+  --tp-k500: 232 189 16; /* #E8BD10 */
+  --tp-k600: 199 159 14; /* #C79F0E */
   /* Typography & surfaces */
-  --tp-ink: 244 241 255; /* #F4F1FF */
-  --tp-paper: 29 20 66;
-  --tp-pale: 21 14 51;
-  /* Lavender washes on dark */
-  --tp-s50: 35 26 82; /* #231A52 */
-  --tp-s100: 46 33 104; /* #2E2168 */
-  --tp-s200: 69 51 137; /* #453389 */
-  /* Deep stage & status — brighter for dark surfaces */
-  --tp-deep: 42 27 102; /* #2A1B66 */
+  --tp-ink: 241 238 253; /* #F1EEFD */
+  --tp-paper: 24 16 69; /* #181045 */
+  --tp-pale: 18 10 52; /* #120A34 */
+  /* Indigo washes on dark */
+  --tp-s50: 34 22 96; /* #221650 */
+  --tp-s100: 46 29 107; /* #2E1D6B */
+  --tp-s200: 74 51 148; /* #4A3394 */
+  /* Deep stage — the official halo indigo */
+  --tp-deep: 32 16 96; /* #201060 official */
   --tp-danger: 251 113 133; /* #FB7185 */
   --tp-warn: 251 191 36; /* #FBBF24 */
   --tp-up: 52 211 153; /* #34D399 */
   --tp-down: 248 113 113; /* #F87171 */
-  /* Elevation — hairline rings + deep violet drop */
-  --tp-shadow-panel: 0 0 0 1px rgba(196, 181, 253, 0.06), 0 18px 44px -22px rgba(0, 0, 0, 0.7);
-  --tp-shadow-glow: 0 2px 8px rgba(139, 92, 246, 0.25), 0 12px 30px -10px rgba(139, 92, 246, 0.45);
-  --tp-shadow-glow-strong: 0 14px 34px -12px rgba(34, 211, 238, 0.5);
+  /* Elevation — hairline rings + deep indigo drop */
+  --tp-shadow-panel: 0 0 0 1px rgba(236, 164, 248, 0.06), 0 18px 44px -22px rgba(0, 0, 0, 0.7);
+  --tp-shadow-glow: 0 2px 8px rgba(216, 72, 240, 0.22), 0 12px 30px -10px rgba(216, 72, 240, 0.4);
+  --tp-shadow-glow-strong: 0 14px 34px -12px rgba(44, 212, 192, 0.5);
+  /* Signature headline gradient — ring 01 → violet → ring 02 */
+  --tp-grad-a: 44 212 192; /* #2CD4C0 */
+  --tp-grad-b: 168 85 247; /* #A855F7 */
+  --tp-grad-c: 216 72 240; /* #D848F0 */
   /* Detail */
   --tp-row: 255 255 255;
-  --tp-sb: 58 43 125;
-  --tp-sb-hover: 76 58 153;
-  --tp-focus: 167 139 250;
+  --tp-sb: 53 33 126;
+  --tp-sb-hover: 71 45 160;
+  --tp-focus: 196 69 232;
   --background: rgb(var(--tp-pale));
   --foreground: rgb(var(--tp-ink));
 }
@@ -122,23 +170,23 @@ body {
   transition: background-color 200ms ease, color 200ms ease;
 }
 
-/* TwinPad ambience — lavender light with a cyan horizon glow. */
+/* TwinPad ambience — indigo daylight with lagoon + orchid auroras. */
 body {
   background-image:
-    radial-gradient(1100px 480px at 88% -8%, rgba(6, 182, 212, 0.09), transparent 60%),
-    radial-gradient(900px 460px at -6% -6%, rgba(139, 92, 246, 0.1), transparent 58%),
-    radial-gradient(700px 380px at 50% 110%, rgba(244, 114, 182, 0.07), transparent 60%);
+    radial-gradient(1100px 480px at 88% -8%, rgba(44, 212, 192, 0.08), transparent 60%),
+    radial-gradient(900px 460px at -6% -6%, rgba(124, 58, 237, 0.09), transparent 58%),
+    radial-gradient(700px 380px at 50% 110%, rgba(216, 72, 240, 0.06), transparent 60%);
   background-repeat: no-repeat;
 }
 .dark body {
   background-image:
-    radial-gradient(1100px 480px at 88% -8%, rgba(34, 211, 238, 0.08), transparent 60%),
-    radial-gradient(900px 460px at -6% -6%, rgba(139, 92, 246, 0.12), transparent 58%),
-    radial-gradient(700px 380px at 50% 112%, rgba(244, 114, 182, 0.06), transparent 60%);
+    radial-gradient(1100px 480px at 88% -8%, rgba(44, 212, 192, 0.07), transparent 60%),
+    radial-gradient(900px 460px at -6% -6%, rgba(157, 107, 242, 0.12), transparent 58%),
+    radial-gradient(700px 380px at 50% 112%, rgba(216, 72, 240, 0.07), transparent 60%);
 }
 
 ::selection {
-  background: rgba(139, 92, 246, 0.28);
+  background: rgba(216, 72, 240, 0.25);
 }
 
 /* Accessible focus outline for keyboard users */
@@ -211,12 +259,77 @@ body {
 .tp-portal-spin-rev { animation: tp-spin-rev 6.5s linear infinite; }
 .tp-pop { animation: tp-pop 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both; }
 
-/* Signature gradient headline */
+/* Signature gradient headline — ring 01 → violet → ring 02 (theme-tuned) */
 .tp-gradient-text {
-  background: linear-gradient(92deg, #7C3AED 0%, #D946EF 45%, #06B6D4 100%);
+  background: linear-gradient(
+    92deg,
+    rgb(var(--tp-grad-a)) 0%,
+    rgb(var(--tp-grad-b)) 48%,
+    rgb(var(--tp-grad-c)) 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* ==========================================================================
+   TwinPad official-brand stage & motif utilities — derived from the banner
+   artwork: deep-indigo plate, planet-halo ellipse, satellite starfield,
+   twin-ring gradient borders and the dual-ring banner glow.
+   ========================================================================== */
+
+/* The official banner plate as a section stage (brand indigo in BOTH themes). */
+.tp-stage {
+  background:
+    radial-gradient(120% 90% at 16% 108%, rgba(44, 212, 192, 0.12), transparent 55%),
+    radial-gradient(120% 100% at 86% -10%, rgba(216, 72, 240, 0.14), transparent 55%),
+    linear-gradient(135deg, #170b45 0%, #201060 58%, #1b0d4e 100%);
+}
+
+/* Faint starfield dots for stage sections (the banner's satellite dots). */
+.tp-stars {
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 28%, rgba(255, 255, 255, 0.32), transparent 100%),
+    radial-gradient(1px 1px at 34% 64%, rgba(255, 255, 255, 0.2), transparent 100%),
+    radial-gradient(1.5px 1.5px at 58% 18%, rgba(255, 255, 255, 0.28), transparent 100%),
+    radial-gradient(1px 1px at 76% 52%, rgba(255, 255, 255, 0.2), transparent 100%),
+    radial-gradient(1.5px 1.5px at 90% 78%, rgba(255, 255, 255, 0.26), transparent 100%),
+    radial-gradient(1px 1px at 22% 86%, rgba(255, 255, 255, 0.18), transparent 100%),
+    radial-gradient(1px 1px at 46% 40%, rgba(255, 255, 255, 0.16), transparent 100%);
+}
+
+/* The banner's planet-halo ellipse, as a soft glow blob. */
+.tp-halo {
+  background: radial-gradient(closest-side, rgba(32, 16, 96, 0.85), rgba(32, 16, 96, 0));
+}
+
+/* Dual-ring glow for the official banner card (lagoon + orchid). */
+.tp-banner-glow {
+  box-shadow:
+    0 24px 70px -28px rgba(44, 212, 192, 0.5),
+    0 24px 70px -22px rgba(216, 72, 240, 0.42),
+    0 8px 26px -12px rgba(23, 11, 69, 0.5);
+}
+
+/* Gradient hairline border (lagoon → violet → orchid) on a card surface. */
+.tp-gborder {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(rgb(var(--tp-paper)), rgb(var(--tp-paper))) padding-box,
+    linear-gradient(120deg, #2cd4c0, #8b5cf6 55%, #d848f0) border-box;
+}
+@media (hover: hover) and (pointer: fine) {
+  .tp-gborder-hover {
+    transition: border-color 200ms ease;
+  }
+  .tp-gborder-hover:hover {
+    border-color: transparent;
+    background-image:
+      linear-gradient(rgb(var(--tp-paper)), rgb(var(--tp-paper))),
+      linear-gradient(120deg, #2cd4c0, #8b5cf6 55%, #d848f0);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+  }
 }
 
 /* Soft 3D card tilt on hover (used by portal cards + collectible tokens) */
