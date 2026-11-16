@@ -3,8 +3,11 @@
 /**
  * TwinPad theme system — Light / Dark / System.
  *
- * - Preference persists in localStorage ("twinpad-theme"); default is Light.
- * - "system" follows prefers-color-scheme and live-updates on OS changes.
+ * - Preference persists in localStorage ("twinpad-theme"); default is Dark —
+ *   first-time visitors (and anyone without a saved preference) get Dark
+ *   Mode, never the OS preference.
+ * - "system" is an explicitly saved preference that follows
+ *   prefers-color-scheme and live-updates on OS changes.
  * - The .dark class is applied to <html> pre-paint by the inline bootstrap in
  *   layout.tsx (no first-paint flash); this provider re-applies on change.
  * - No database or login involved — purely client-side preference.
@@ -16,7 +19,7 @@ export type ThemePreference = "light" | "dark" | "system";
 const STORAGE_KEY = "twinpad-theme";
 
 interface ThemeContextValue {
-  /** Raw stored preference ("light" until the stored value is read). */
+  /** Raw stored preference ("dark" until the stored value is read). */
   theme: ThemePreference;
   /** Effective theme after resolving "system". */
   resolvedTheme: "light" | "dark";
@@ -26,8 +29,8 @@ interface ThemeContextValue {
 }
 
 const ThemeContext = createContext<ThemeContextValue>({
-  theme: "light",
-  resolvedTheme: "light",
+  theme: "dark",
+  resolvedTheme: "dark",
   setTheme: () => {},
   mounted: false,
 });
@@ -43,20 +46,21 @@ function applyTheme(theme: ThemePreference): "light" | "dark" {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<ThemePreference>("light");
-  const [resolved, setResolved] = useState<"light" | "dark">("light");
+  const [theme, setThemeState] = useState<ThemePreference>("dark");
+  const [resolved, setResolved] = useState<"light" | "dark">("dark");
   const [mounted, setMounted] = useState(false);
 
-  // Restore the stored preference after hydration (server default = light).
+  // Restore the stored preference after hydration (server default = dark;
+  // a saved "light"/"system" always wins over the default).
   useEffect(() => {
     let stored: string | null = null;
     try {
       stored = localStorage.getItem(STORAGE_KEY);
     } catch {
-      // Private mode / storage disabled — fall back to Light.
+      // Private mode / storage disabled — fall back to Dark.
     }
     const t: ThemePreference =
-      stored === "dark" || stored === "light" || stored === "system" ? stored : "light";
+      stored === "dark" || stored === "light" || stored === "system" ? stored : "dark";
     setThemeState(t);
     setResolved(applyTheme(t));
     setMounted(true);

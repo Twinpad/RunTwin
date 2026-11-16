@@ -11,11 +11,13 @@ const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 /**
  * Theme bootstrap — runs before first paint (no flash of the wrong theme).
- * Reads the persisted preference (default: light) and applies the `.dark`
- * class to <html>; System follows prefers-color-scheme. Kept in sync with
- * src/components/theme/theme-provider.tsx (STORAGE_KEY + apply logic).
+ * Reads the persisted preference (default: dark — first-time visitors get
+ * Dark Mode, never the OS preference) and applies the `.dark` class to
+ * <html>; a saved "system" preference follows prefers-color-scheme. Kept in
+ * sync with src/components/theme/theme-provider.tsx (STORAGE_KEY + apply
+ * logic).
  */
-const themeBootstrap = `(function(){try{var t=localStorage.getItem("twinpad-theme");if(t!=="light"&&t!=="dark"&&t!=="system")t="light";var d=t==="dark"||(t==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);var e=document.documentElement.classList;d?e.add("dark"):e.remove("dark");document.documentElement.style.colorScheme=d?"dark":"light";}catch(e){}})();`;
+const themeBootstrap = `(function(){try{var t=localStorage.getItem("twinpad-theme");if(t!=="light"&&t!=="dark"&&t!=="system")t="dark";var d=t==="dark"||(t==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);var e=document.documentElement.classList;d?e.add("dark"):e.remove("dark");document.documentElement.style.colorScheme=d?"dark":"light";}catch(e){document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";}})();`;
 
 /**
  * metadataBase origin — resolves relative Open Graph / Twitter image URLs
@@ -64,7 +66,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${mono.variable} ${display.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`dark ${inter.variable} ${mono.variable} ${display.variable}`}
+      suppressHydrationWarning
+    >
       <body className="min-h-screen font-sans antialiased">
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
         <ThemeProvider>
