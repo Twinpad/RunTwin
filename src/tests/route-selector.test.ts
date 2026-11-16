@@ -87,10 +87,13 @@ describe("RouteSelector — states", () => {
     expect(screen.queryByText("unavailable")).toBeNull();
   });
 
-  it("shows Ready to launch with details when both routes verify", async () => {
+  it("shows Ready to launch and hides technical details", async () => {
+    // The endpoint still returns program/config facts; the card must NOT
+    // render them — the launch selection stays clean.
     renderSelector();
     await waitFor(() => expect(screen.getAllByText("Ready to launch").length).toBe(2));
-    expect(screen.getAllByText(/ADDR-(PUMP|LAB)/).length).toBeGreaterThan(0);
+    expect(screen.queryByText(/ADDR-/)).toBeNull();
+    expect(screen.queryByText(/programId/)).toBeNull();
     for (const card of cards()) expect(card.getAttribute("aria-disabled")).toBe("false");
     // Two independent endpoint calls (one per route).
     expect(mocks.fetchMock).toHaveBeenCalledTimes(2);

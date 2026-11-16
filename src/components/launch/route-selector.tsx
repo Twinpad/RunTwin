@@ -90,10 +90,12 @@ export function RouteSelector({
       const data = (await res.json()) as RouteAvailability & {
         retryAfterSeconds?: number;
       };
+      // Technical program/config facts stay server-side (the endpoint still
+      // returns them for diagnostics) — the launch card shows only the
+      // honest status line.
       const payload: RouteAvailability = {
         state: data.state,
         message: data.message,
-        details: data.details,
         retryAfterSeconds: data.retryAfterSeconds,
       };
       setAvailability((prev) => ({ ...prev, [id]: payload }));
@@ -234,21 +236,10 @@ export function RouteSelector({
             <div id={`route-availability-${route.id}`} className="mt-2 flex-1">
               {state === "loading" && <Spinner label={AVAILABILITY_COPY.loading} />}
               {state === "ready" && (
-                <>
-                  <p className="flex items-center gap-1.5 text-xs font-medium text-mint-700">
-                    <Icon name="check" size={13} />
-                    {AVAILABILITY_COPY.ready}
-                  </p>
-                  {(availability[route.id]?.details ?? []).length > 0 && (
-                    <ul className="mt-2 space-y-0.5 text-2xs leading-4 text-night-500">
-                      {(availability[route.id]?.details ?? []).map((d, i) => (
-                        <li key={i} className="break-all">
-                          {d}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </>
+                <p className="flex items-center gap-1.5 text-xs font-medium text-mint-700">
+                  <Icon name="check" size={13} />
+                  {AVAILABILITY_COPY.ready}
+                </p>
               )}
               {state === "retry" && (
                 <>
