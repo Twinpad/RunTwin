@@ -2,10 +2,11 @@
 /**
  * Topbar social-links regression tests.
  *
- * TwinPad ships with NO social links: the project has no verified GitHub org
- * or X account, and brand links must never point at accounts the project does
- * not own (including any predecessor brand's accounts). These tests pin that
- * honest behavior so a placeholder link cannot sneak back in.
+ * TwinPad's OFFICIAL accounts are https://x.com/RunOnTwin and
+ * https://github.com/Twinpad (both verified by the project owner). These
+ * tests pin that behavior: the header renders exactly those two links —
+ * new-tab + noreferrer — and never any legacy-brand or placeholder social
+ * accounts (including any predecessor brand's accounts).
  * Wallet/connection/navigation modules are mocked at the boundary; the real
  * Topbar renders.
  */
@@ -51,11 +52,19 @@ function renderTopbar() {
   );
 }
 
-describe("topbar social links (none until verified accounts exist)", () => {
-  it("renders no social links at all", () => {
+describe("topbar social links (official X and GitHub)", () => {
+  it("renders exactly the two official social links", () => {
     renderTopbar();
-    const links = Array.from(document.querySelectorAll("a[aria-label^='Official TwinPad']"));
-    expect(links.length).toBe(0);
+    const x = screen.getByRole("link", { name: "TwinPad on X" });
+    const gh = screen.getByRole("link", { name: "TwinPad on GitHub" });
+    expect(x.getAttribute("href")).toBe("https://x.com/RunOnTwin");
+    expect(gh.getAttribute("href")).toBe("https://github.com/Twinpad");
+    expect(x.getAttribute("target")).toBe("_blank");
+    expect(gh.getAttribute("target")).toBe("_blank");
+    expect(x.getAttribute("rel")).toBe("noopener noreferrer");
+    expect(gh.getAttribute("rel")).toBe("noopener noreferrer");
+    expect(x.getAttribute("title")).toBe("Follow TwinPad on X");
+    expect(gh.getAttribute("title")).toBe("Visit TwinPad on GitHub");
   });
 
   it("never links any legacy-brand or placeholder social accounts", () => {
@@ -63,6 +72,10 @@ describe("topbar social links (none until verified accounts exist)", () => {
     const hrefs = Array.from(document.querySelectorAll("a[href]"))
       .map((a) => a.getAttribute("href") ?? "")
       .filter((h) => /^https?:\/\//.test(h));
+    const official = new Set([
+      "https://x.com/RunOnTwin",
+      "https://github.com/Twinpad",
+    ]);
     for (const href of hrefs) {
       expect(href).not.toContain("DotPad");
       expect(href).not.toContain("RelayPad");
@@ -70,9 +83,10 @@ describe("topbar social links (none until verified accounts exist)", () => {
       expect(href).not.toContain("relaypad");
       expect(href).not.toContain("Usetwinpad");
       expect(href).not.toContain("TwinPadFun");
-      // github.com / x.com profiles are the only legacy-link shapes to guard.
-      expect(href.startsWith("https://github.com/")).toBe(false);
-      expect(href.startsWith("https://x.com/")).toBe(false);
+      // github.com / x.com profiles must be exactly the two official accounts.
+      if (href.startsWith("https://github.com/") || href.startsWith("https://x.com/")) {
+        expect(official.has(href)).toBe(true);
+      }
     }
   });
 
@@ -85,3 +99,4 @@ describe("topbar social links (none until verified accounts exist)", () => {
     expect(group).not.toBeNull();
   });
 });
+
