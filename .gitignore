@@ -15,6 +15,7 @@ next-env.d.ts
 
 # prisma
 prisma/migrations/dev.db*
+prisma/postgres/generated-client/
 .vercel
 .env*
 !.env.example
