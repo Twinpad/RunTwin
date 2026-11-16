@@ -9,6 +9,9 @@
  * - GeckoTerminal https://api.geckoterminal.com/api/v2/...
  *   → pool discovery fallback + REAL OHLCV candles per pool
  *     (minute 1/5/15, hour 1/4, day). Rate limit 30 req/min — cached.
+ * - On-chain identity fallback: when the providers supply no image, ONE
+ *   cached read of the mint's Token-2022 TokenMetadata extension resolves
+ *   the token's own name/symbol/metadata-URI → image (see onchain-metadata).
  *
  * Honesty rules: every metric is passed through from the provider response
  * verbatim; anything the provider did not supply stays null/unavailable.
@@ -16,6 +19,7 @@
  * states rather than partial guesses.
  */
 import { fetchJson } from "@/lib/discovery/http";
+import { fetchTokenOnchainIdentity } from "./onchain-metadata";
 import type { VenueKind } from "./trades";
 
 /* ------------------------------------------------------------- caching ---- */
@@ -350,6 +354,21 @@ export async function resolveLiveMarket(mint: string): Promise<LiveMarket> {
     : gtPool?.name
       ? { name: gtPool.name.split(" / ")[0] ?? null, symbol: null, imageUrl: null, pairCreatedAt: null }
       : null;
+
+  // On-chain identity fallback: DexScreener frequently has no `info.imageUrl`
+  // for brand-new tokens, but the token's own metadata is authoritative —
+  // modern pump.fun mints are Token-2022 with the metadata (name/symbol/uri →
+  // image) embedded in the mint's TokenMetadata extension. One bounded,
+  // cached read fills the image (and missing name/symbol) when the providers
+  // cannot; failures stay null (never fabricated).
+  if (identity && identity.imageUrl == null) {
+    const onchain = await fetchTokenOnchainIdentity(mint);
+    if (onchain) {
+      if (onchain.image) identity.imageUrl = onchain.image;
+      if (!identity.name && onchain.name) identity.name = onchain.name;
+      if (!identity.symbol && onchain.symbol) identity.symbol = onchain.symbol;
+    }
+  }
 
   return { mint, available: true, identity, venue, metrics, notes };
 }

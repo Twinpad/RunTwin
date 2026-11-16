@@ -21,6 +21,7 @@
 import { Connection, PublicKey } from "@solana/web3.js";
 import type BN from "bn.js";
 import { PumpSdk, OnlinePumpSdk, PUMP_PROGRAM_ID, type CreateEventBc } from "@pump-fun/pump-sdk";
+import { fetchTokenOnchainIdentity, fetchImageFromMetadataUri } from "@/lib/token/onchain-metadata";
 import type { DiscoveredToken, SourceFeed } from "./types";
 import { TOKEN_DECIMALS_PUMP, WSOL_MINT } from "./pump-constants";
 
@@ -176,11 +177,23 @@ export async function scanPumpProgram(
       for (const buf of extractProgramDataLogs(logMessages)) {
         const ev = tryDecodeEvent((b) => pumpSdk.decodeCreateEventBc(b), buf);
         if (ev && ev.mint) {
+          // The create event carries the metadata URI — resolve the token's
+          // image right here (one bounded external fetch per NEW token; a
+          // failure keeps imageUrl null — never a fabricated icon).
+          let imageUrl: string | null = null;
+          const uri = typeof (ev as { uri?: unknown }).uri === "string" ? (ev as { uri: string }).uri : null;
+          if (uri) {
+            try {
+              imageUrl = await fetchImageFromMetadataUri(uri);
+            } catch {
+              imageUrl = null;
+            }
+          }
           tokens.push({
             mint: ev.mint.toBase58(),
             name: ev.name || "Unknown",
             symbol: ev.symbol || "???",
-            imageUrl: null, // metadata URI is off-chain IPFS; icon stays a fallback, not fabricated
+            imageUrl, // resolved from the create event's metadata URI (null when unavailable)
             source: "pumpfun.curve",
             status: "curve",
             createdAt: bnToNumber(ev.timestamp),
@@ -238,7 +251,22 @@ export async function enrichPumpCurves(
   // Sequential with pacing — concurrent per-mint fetches overwhelm public
   // RPC endpoints (observed 429s). A rate limit stops the enrichment pass
   // early; tokens keep their create-event snapshot (honest, no fabrication).
+  let imageBackfills = 0;
+  const IMAGE_BACKFILL_BUDGET = 8; // per round; the identity cache makes later rounds cheap
   for (const t of tokens) {
+    // Bounded image backfill: tokens discovered before the metadata-image
+    // resolution existed (or whose create-event image fetch failed) get their
+    // logo from the authoritative on-chain metadata (Token-2022 extension →
+    // JSON → image). The module cache bounds repeat work across rounds.
+    if (!t.imageUrl && imageBackfills < IMAGE_BACKFILL_BUDGET) {
+      imageBackfills += 1;
+      try {
+        const onchain = await fetchTokenOnchainIdentity(t.mint);
+        if (onchain?.image) t.imageUrl = onchain.image;
+      } catch {
+        // Unavailable — the initials avatar stays honest.
+      }
+    }
     try {
       const curve = await online.fetchBondingCurve(new PublicKey(t.mint));
       const price = curvePriceSol(curve.virtualQuoteReserves, curve.virtualTokenReserves);
