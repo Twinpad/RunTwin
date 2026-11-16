@@ -15,7 +15,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { TwinMark } from "@/components/brand/logo";
-import { Icon } from "@/components/ui/icons";
+import { Icon, BrandIcon } from "@/components/ui/icons";
 
 export interface DockItem {
   href: string;
@@ -357,6 +357,45 @@ function MobileDock() {
                 </ul>
               </div>
             ))}
+                      <div>
+                        <p className="px-1 pb-1.5 text-2xs font-bold uppercase tracking-[0.14em] text-night-500">
+                          Connect
+                        </p>
+                        <ul className="grid grid-cols-2 gap-2">
+                          <li>
+                            <a
+                              href="https://x.com/RunOnTwin"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label="TwinPad on X"
+                              title="Follow TwinPad on X"
+                              onClick={go}
+                              className="flex items-center gap-2.5 rounded-2xl border border-night-700 bg-night-850 p-3 text-night-400 transition-all duration-200 hover:border-mint-500/40 hover:text-ink"
+                            >
+                              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-night-800">
+                                <BrandIcon name="x" size={16} />
+                              </span>
+                              <span className="text-[13px] font-semibold">X (Twitter)</span>
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              href="https://github.com/Twinpad"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label="TwinPad on GitHub"
+                              title="Visit TwinPad on GitHub"
+                              onClick={go}
+                              className="flex items-center gap-2.5 rounded-2xl border border-night-700 bg-night-850 p-3 text-night-400 transition-all duration-200 hover:border-mint-500/40 hover:text-ink"
+                            >
+                              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-night-800">
+                                <BrandIcon name="github" size={16} />
+                              </span>
+                              <span className="text-[13px] font-semibold">GitHub</span>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
           </div>
         </div>
       )}

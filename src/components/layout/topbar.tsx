@@ -9,17 +9,30 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { TwinMark, TwinWordmark } from "@/components/brand/logo";
-import { Icon } from "@/components/ui/icons";
+import { Icon, BrandIcon } from "@/components/ui/icons";
 import { WalletButton } from "@/components/wallet/wallet-button";
 import { RouteBadge } from "@/components/brand/route-badge";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { shortAddress } from "@/lib/format";
 
 /**
- * TwinPad social links: none yet — the project has no verified GitHub org or
- * X account at launch, so no brand links are rendered (never point brand
- * links at accounts this project does not own).
+ * TwinPad official social links — verified X and GitHub presences.
  */
+const SOCIAL_LINKS = [
+  {
+    href: "https://x.com/RunOnTwin",
+    label: "TwinPad on X",
+    tooltip: "Follow TwinPad on X",
+    icon: "x" as const,
+  },
+  {
+    href: "https://github.com/Twinpad",
+    label: "TwinPad on GitHub",
+    tooltip: "Visit TwinPad on GitHub",
+    icon: "github" as const,
+  },
+];
+
 
 interface SearchHit {
   id: string;
@@ -187,6 +200,19 @@ export function Topbar(_props: { onMenu?: () => void }) {
           Launch
         </Link>
         <ThemeToggle />
+        {SOCIAL_LINKS.map((social) => (
+          <a
+            key={social.href}
+            href={social.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={social.label}
+            title={social.tooltip}
+            className="hidden h-9 w-9 items-center justify-center rounded-xl border border-night-700 bg-night-950 text-night-400 transition-all duration-200 hover:scale-105 hover:border-mint-500/50 hover:bg-night-800 hover:text-ink sm:flex"
+          >
+            <BrandIcon name={social.icon} size={18} />
+          </a>
+        ))}
         <WalletButton />
       </div>
     </header>
