@@ -543,16 +543,22 @@ export class PumpLiveEngine {
       // shared gateway's request budget is spent. The remainder is picked up
       // by later rounds (actives are re-sorted by lastTradeAt), so coverage
       // stays round-robin while instantaneous provider load stays bounded.
+      // ADAPTIVE: under rate-limiting backpressure (pollStretch > 1) the round
+      // shrinks with the stretch — fewer mints, fewer signatures per mint,
+      // less parallelism — so the poller YIELDS provider capacity to
+      // user-facing traffic instead of saturating it round after round.
+      const stretch = this.pollStretch;
+      const sliceSize = Math.max(3, Math.ceil(12 / stretch));
       const actives = [...this.mints.values()]
         .filter((s) => s.id.bondingCurveKey && !s.id.migrated)
         .sort((a, b) => (b.lastTradeAt ?? b.id.createdAt) - (a.lastTradeAt ?? a.id.createdAt))
-        .slice(0, 12);
-      const BATCH = 3;
+        .slice(0, sliceSize);
+      const BATCH = stretch >= 8 ? 1 : 3;
       const startRequests = rpcGatewayMetrics().requestsTotal;
       const roundBudget =
         Number(process.env.PUMP_LIVE_ROUND_CALL_BUDGET) || POLL_ROUND_CALL_BUDGET;
       for (let i = 0; i < actives.length; i += BATCH) {
-        await Promise.all(actives.slice(i, i + BATCH).map((st) => this.pollMintTrades(st)));
+        await Promise.all(actives.slice(i, i + BATCH).map((st) => this.pollMintTrades(st, stretch)));
         if (rpcGatewayMetrics().requestsTotal - startRequests >= roundBudget) break;
       }
       // A round that caused no new 429s recovers the cadence gradually.
@@ -566,7 +572,7 @@ export class PumpLiveEngine {
     }
   }
 
-  private async pollMintTrades(st: MintState): Promise<void> {
+  private async pollMintTrades(st: MintState, stretch = 1): Promise<void> {
     const curve = st.id.bondingCurveKey;
     if (!curve) return;
     try {
@@ -575,11 +581,15 @@ export class PumpLiveEngine {
         result?: { value?: { signature: string; err: unknown; blockTime: number | null }[] | null };
       }>("getSignaturesForAddress", [curve, { limit: 12 }]);
       const list = j?.result?.value ?? [];
+      // ADAPTIVE: under rate-limiting backpressure only the freshest
+      // signature is resolved this round (1 getTransaction instead of 4),
+      // directly shrinking the round's provider footprint.
+      const freshCap = Math.max(1, Math.ceil(4 / stretch));
       const fresh = list
         .filter(
           (s) => s && !s.err && s.signature && !this.dedupe.has(`${s.signature}:buy`) && !this.dedupe.has(`${s.signature}:sell`),
         )
-        .slice(0, 4);
+        .slice(0, freshCap);
       for (const s of fresh) {
         await this.parseCurveTrade(st, s.signature, s.blockTime);
       }

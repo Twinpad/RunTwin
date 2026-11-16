@@ -1,21 +1,29 @@
 /**
  * Launch-route availability classification.
  *
- * Shared by the RouteSelector UI and the adapters' loadConfig paths. The goal
- * is an HONEST presentation: a transport/RPC failure is reported as
- * "temporarily unavailable — retry", a route that is genuinely not deployed
- * or not configured for the selected cluster is reported as "not supported",
- * and raw SDK/RPC error text is never surfaced to the user.
+ * Shared by the RouteSelector UI, the launch-availability API route and the
+ * adapters' loadConfig paths. The goal is an HONEST presentation:
+ * - "rate_limited" — the shared Solana RPC provider is throttling us right
+ *   now (circuit open / 429). The check retries automatically.
+ * - "retry" — another transient transport failure; the user can retry.
+ * - "unsupported" — the route is genuinely not deployed/configured on the
+ *   selected cluster (a real protocol answer).
+ * Raw SDK/RPC error text is never surfaced to the user.
  */
 import { TwinpadError } from "../connection";
 
-export type RouteAvailabilityState = "loading" | "ready" | "retry" | "unsupported";
+export type RouteAvailabilityState =
+  | "loading"
+  | "ready"
+  | "retry"
+  | "rate_limited"
+  | "unsupported";
 
 export interface RouteAvailability {
   state: RouteAvailabilityState;
   /**
    * Short, user-facing explanation. Never raw SDK/RPC error text.
-   * Present only for retry/unsupported states.
+   * Present only for non-ready states.
    */
   message: string;
   /**
@@ -23,6 +31,11 @@ export interface RouteAvailability {
    * config values). Never error text.
    */
   details?: string[];
+  /**
+   * rate_limited/retry only: seconds after which a retry is sensible
+   * (from the provider's Retry-After or the circuit breaker).
+   */
+  retryAfterSeconds?: number;
 }
 
 /** User-facing copy for each state (single source used by the UI). */
@@ -30,6 +43,7 @@ export const AVAILABILITY_COPY = {
   loading: "Checking launch availability…",
   ready: "Ready to launch",
   retry: "Temporarily unavailable. Please try again.",
+  rate_limited: "The Solana RPC is rate-limited right now. Retrying automatically…",
   unsupported: "This launch route is not supported on the selected network.",
 } as const;
 
@@ -51,18 +65,19 @@ const TRANSPORT_PATTERNS = [
   "aborterror",
   "timeout",
   "timed out",
-  "rate limit",
-  "429",
-  "502",
-  "503",
-  "504",
-  "too many requests",
-  "circuit open",
-  "-32005",
-  "-32000",
   "load aborted",
   "connection closed",
   "connection error",
+];
+
+/** Keywords that specifically indicate provider RATE LIMITING (429 family). */
+const RATE_LIMIT_PATTERNS = [
+  "rate limit",
+  "rate-limited",
+  "429",
+  "too many requests",
+  "circuit open",
+  "compute units per second",
 ];
 
 function isTransportError(raw: string): boolean {
@@ -70,12 +85,38 @@ function isTransportError(raw: string): boolean {
   return TRANSPORT_PATTERNS.some((p) => lower.includes(p));
 }
 
+function isRateLimitError(raw: string): boolean {
+  const lower = raw.toLowerCase();
+  return RATE_LIMIT_PATTERNS.some((p) => lower.includes(p));
+}
+
+/**
+ * Walk an error's cause chain (bounded) collecting message text, so gateway
+ * errors wrapped by the adapters (TwinpadError.cause) are still classified.
+ */
+function causeMessages(err: unknown, depth = 0): string[] {
+  if (!err || depth > 3) return [];
+  const out: string[] = [];
+  if (err instanceof Error) {
+    out.push(err.message);
+    if (err.name) out.push(err.name);
+    const code = (err as { code?: unknown }).code;
+    if (typeof code === "string") out.push(code);
+    const cause = (err as { cause?: unknown }).cause;
+    if (cause) out.push(...causeMessages(cause, depth + 1));
+  } else if (typeof err === "string") {
+    out.push(err);
+  }
+  return out;
+}
+
 /**
  * Classify a loadConfig failure into an honest UI state.
  *
  * Rules:
- * - Transport/RPC failures → "retry" (we do not know the route is dead; the
- *   provider may be rate-limiting or restarting — retrying is the right act).
+ * - Provider rate limiting (circuit open / 429 anywhere in the cause chain)
+ *   → "rate_limited": the provider is throttling us, the check retries
+ *   automatically.
  * - TwinpadError("PROTOCOL") → "unsupported": the adapter verified the route
  *   is genuinely not deployed/configured on this cluster.
  * - TwinpadError with an RPC-ish code → "retry".
@@ -83,14 +124,17 @@ function isTransportError(raw: string): boolean {
  *   never expose the raw error).
  */
 export function classifyAvailabilityError(err: unknown): RouteAvailability {
+  const messages = causeMessages(err);
+  if (messages.some(isRateLimitError)) {
+    return { state: "rate_limited", message: AVAILABILITY_COPY.rate_limited };
+  }
   if (err instanceof TwinpadError) {
     if (err.code === "PROTOCOL") {
       return { state: "unsupported", message: AVAILABILITY_COPY.unsupported };
     }
     return { state: "retry", message: AVAILABILITY_COPY.retry };
   }
-  const raw = err instanceof Error ? err.message : String(err);
-  if (isTransportError(raw)) {
+  if (messages.some(isTransportError)) {
     return { state: "retry", message: AVAILABILITY_COPY.retry };
   }
   // Unknown error shape: treat as transient (retryable) rather than telling
@@ -107,3 +151,4 @@ export function loadingAvailability(): RouteAvailability {
 export function readyAvailability(): RouteAvailability {
   return { state: "ready", message: AVAILABILITY_COPY.ready };
 }
+

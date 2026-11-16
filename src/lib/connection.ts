@@ -122,23 +122,38 @@ export function resolveBrowserNetworkConfig(
 
 const connections = new Map<string, Connection>();
 
-export function getConnection(cfg: TwinpadNetworkConfig): Connection {
-  const key = `${cfg.cluster}:${cfg.rpcUrl}`;
+/**
+ * Connection factory. `pool` selects the shared RPC gateway admission pool:
+ * "primary" (default — the configured provider, shared by the engine,
+ * discovery and the /api/rpc proxy) or "availability" — a small dedicated
+ * bucket for launch-route availability checks so a user opening the Create
+ * page never queues behind background provider traffic.
+ */
+export function getConnection(cfg: TwinpadNetworkConfig, pool: string = "primary"): Connection {
+  const key = `${pool}:${cfg.cluster}:${cfg.rpcUrl}`;
   let conn = connections.get(key);
   if (!conn) {
     conn = new Connection(cfg.rpcUrl, {
       commitment: cfg.commitment,
       confirmTransactionInitialTimeout: 90_000,
       // Admission control for every HTTP JSON-RPC this Connection makes:
-      // requests pass the shared gateway's token bucket and concurrency cap
-      // before reaching the provider, and fail fast while the circuit breaker
-      // is open (web3.js's own 429 retry loop handles transient limits).
-      // WS subscriptions bypass fetch entirely.
-      fetchMiddleware: rpcFetchMiddleware(),
+      // requests pass the selected gateway pool's token bucket and concurrency
+      // cap before reaching the provider, and fail fast while that pool's
+      // circuit breaker is open (web3.js's own 429 retry loop handles
+      // transient limits). WS subscriptions bypass fetch entirely.
+      fetchMiddleware: rpcFetchMiddleware(pool),
     });
     connections.set(key, conn);
   }
   return conn;
+}
+
+/** Explicit alias for pool-bound connections (availability checks etc.). */
+export function getConnectionForPool(
+  cfg: TwinpadNetworkConfig,
+  pool: string,
+): Connection {
+  return getConnection(cfg, pool);
 }
 
 export function getCluster(conn: Connection): Cluster {

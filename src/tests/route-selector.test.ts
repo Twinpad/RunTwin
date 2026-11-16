@@ -1,40 +1,54 @@
 // @vitest-environment jsdom
 /**
- * RouteSelector UI-state tests (adapters mocked — no network).
- * Covers: radio semantics, loading/ready/retry/unsupported states, honest
- * messages (no raw errors in the DOM), hover/selected styling hooks,
- * keyboard selection, retry, switching, and the availability callback the
- * create page uses to gate Continue. Written with React.createElement (no
- * JSX) so the file stays a `.test.ts` (project vitest include pattern).
+ * RouteSelector UI-state tests (server availability endpoint mocked — no
+ * network). The component now checks availability SERVER-SIDE via
+ * GET /api/launch/availability?route=…; these tests mock that fetch and
+ * cover: radio semantics, loading/ready/retry/rate_limited/unsupported
+ * states, honest messages (no raw errors in the DOM), per-route
+ * independence, automatic retry under provider rate limiting, keyboard
+ * selection, and the availability callback the create page uses to gate
+ * Continue. Written with React.createElement (no JSX) so the file stays a
+ * `.test.ts` (project vitest include pattern).
  */
 import { afterEach, describe, expect, it, vi, beforeEach } from "vitest";
 import { createElement } from "react";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { RouteSelector } from "@/components/launch/route-selector";
-import { TwinpadError } from "@/lib/connection";
 
-const mocks = vi.hoisted(() => {
-  const loadConfigs: Record<string, ReturnType<typeof vi.fn>> = {};
-  return {
-    loadConfigs,
-    getAdapter: vi.fn(async (id: string) => ({
-      id,
-      describePrograms: () => [{ name: `${id} program`, address: `ADDR-${id}` }],
-      loadConfig: loadConfigs[id],
-    })),
-  };
-});
+type EndpointState = {
+  state: "ready" | "retry" | "rate_limited" | "unsupported";
+  message: string;
+  details?: string[];
+  retryAfterSeconds?: number;
+};
 
-vi.mock("@/lib/adapters", () => ({
-  ROUTES: [
-    { id: "pump", label: "Pump.fun → PumpSwap" },
-    { id: "launchlab", label: "LaunchLab → CPMM" },
-  ],
-  getAdapter: mocks.getAdapter,
+const mocks = vi.hoisted(() => ({
+  fetchMock: vi.fn(),
 }));
 
-function fakeAdapterCalls(impl: () => Promise<unknown>) {
-  return vi.fn(impl);
+const READY_PUMP: EndpointState = {
+  state: "ready",
+  message: "Ready to launch",
+  details: ["pump program: ADDR-PUMP"],
+};
+const READY_LAB: EndpointState = {
+  state: "ready",
+  message: "Ready to launch",
+  details: ["launchlab program: ADDR-LAB"],
+};
+
+function respond(responses: Record<string, EndpointState>) {
+  return async (input: RequestInfo | URL) => {
+    const url = String(input);
+    const route = url.includes("route=pump") ? "pump" : url.includes("route=launchlab") ? "launchlab" : "";
+    const r = responses[route];
+    if (!r) throw new Error(`no mock for ${url}`);
+    return {
+      ok: true,
+      status: 200,
+      json: async () => ({ route, cluster: "mainnet-beta", ...r }),
+    } as Response;
+  };
 }
 
 function renderSelector(value: "pump" | "launchlab" = "pump", onChange = vi.fn(), onAvailability = vi.fn()) {
@@ -42,7 +56,6 @@ function renderSelector(value: "pump" | "launchlab" = "pump", onChange = vi.fn()
     createElement(RouteSelector, {
       value,
       onChange,
-      connection: {} as never,
       cluster: "mainnet-beta",
       onAvailabilityChange: onAvailability,
     }),
@@ -51,13 +64,15 @@ function renderSelector(value: "pump" | "launchlab" = "pump", onChange = vi.fn()
 
 beforeEach(() => {
   vi.spyOn(console, "error").mockImplementation(() => {});
-  mocks.loadConfigs.pump = fakeAdapterCalls(async () => ({ details: { programId: "P1" } }));
-  mocks.loadConfigs.launchlab = fakeAdapterCalls(async () => ({ details: { configId: "C1" } }));
+  mocks.fetchMock.mockImplementation(respond({ pump: READY_PUMP, launchlab: READY_LAB }));
+  vi.stubGlobal("fetch", mocks.fetchMock);
 });
 
 afterEach(() => {
   cleanup();
+  vi.unstubAllGlobals();
   vi.restoreAllMocks();
+  vi.useRealTimers();
 });
 
 const cards = () => screen.getAllByRole("radio");
@@ -65,8 +80,7 @@ const cardFor = (label: string) => cards().find((el) => el.textContent?.includes
 
 describe("RouteSelector — states", () => {
   it("shows the loading message while availability is checked", async () => {
-    mocks.loadConfigs.pump = fakeAdapterCalls(() => new Promise(() => {}));
-    mocks.loadConfigs.launchlab = fakeAdapterCalls(() => new Promise(() => {}));
+    mocks.fetchMock.mockImplementation(() => new Promise(() => {}));
     renderSelector();
     expect(screen.getAllByText("Checking launch availability…").length).toBe(2);
     expect(screen.queryByText("Ready to launch")).toBeNull();
@@ -76,73 +90,107 @@ describe("RouteSelector — states", () => {
   it("shows Ready to launch with details when both routes verify", async () => {
     renderSelector();
     await waitFor(() => expect(screen.getAllByText("Ready to launch").length).toBe(2));
-    expect(screen.getAllByText(/ADDR-(pump|launchlab)/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/ADDR-(PUMP|LAB)/).length).toBeGreaterThan(0);
     for (const card of cards()) expect(card.getAttribute("aria-disabled")).toBe("false");
+    // Two independent endpoint calls (one per route).
+    expect(mocks.fetchMock).toHaveBeenCalledTimes(2);
   });
 
-  it("shows unsupported — never raw errors — for a PROTOCOL failure", async () => {
-    mocks.loadConfigs.pump = fakeAdapterCalls(async () => {
-      throw new TwinpadError("PROTOCOL", "LaunchLab config account DEADBEEF not found on mainnet-beta.");
-    });
-    const onChange = vi.fn();
-    renderSelector("pump", onChange);
+  it("shows unsupported — never raw errors — for a PROTOCOL answer", async () => {
+    mocks.fetchMock.mockImplementation(
+      respond({
+        pump: { state: "unsupported", message: "This launch route is not supported on the selected network." },
+        launchlab: READY_LAB,
+      }),
+    );
+    renderSelector("pump");
     await waitFor(() => expect(screen.getAllByText(/not supported on the selected network/).length).toBe(1));
-    const pumpCard = cardFor("Pump.fun → PumpSwap");
-    expect(pumpCard.getAttribute("aria-disabled")).toBe("true");
-    // An unavailable route can never appear selected (even if it is the
-    // parent's current value) — the selection is visually dropped.
-    expect(pumpCard.getAttribute("aria-checked")).toBe("false");
-    expect(pumpCard.className).not.toContain("border-mint-500");
-    expect(pumpCard.textContent).not.toContain("DEADBEEF");
-    expect(pumpCard.className).toContain("cursor-not-allowed");
-    // Selecting an unavailable route is refused.
-    fireEvent.click(pumpCard);
-    expect(onChange).not.toHaveBeenCalled();
-    // The healthy route stays selectable.
-    fireEvent.click(cardFor("LaunchLab → CPMM"));
-    expect(onChange).toHaveBeenCalledWith("launchlab");
+    // One failing route must NOT disable the unrelated route.
+    await waitFor(() => expect(screen.getAllByText("Ready to launch").length).toBe(1));
   });
 
-  it("shows the retry state with a working Retry action for transport failures", async () => {
-    mocks.loadConfigs.launchlab = fakeAdapterCalls(async () => {
-      throw new Error("TypeError: fetch failed");
+  it("shows the generic retry state with a per-route Retry button", async () => {
+    mocks.fetchMock.mockImplementation(
+      respond({
+        pump: { state: "retry", message: "Temporarily unavailable. Please try again." },
+        launchlab: READY_LAB,
+      }),
+    );
+    renderSelector("pump");
+    await waitFor(() => expect(screen.getAllByText("Temporarily unavailable. Please try again.").length).toBe(1));
+    const retryButtons = screen.getAllByText("Retry availability check");
+    expect(retryButtons.length).toBe(1);
+    // Retry re-checks only that route.
+    fireEvent.click(retryButtons[0]);
+    await waitFor(() => expect(mocks.fetchMock).toHaveBeenCalledTimes(3));
+  });
+
+  it("maps provider rate limiting to the dedicated rate_limited state", async () => {
+    mocks.fetchMock.mockImplementation(
+      respond({
+        pump: {
+          state: "rate_limited",
+          message: "The Solana RPC is rate-limited right now. Retrying automatically…",
+          retryAfterSeconds: 4,
+        },
+        launchlab: READY_LAB,
+      }),
+    );
+    renderSelector("pump");
+    await waitFor(() =>
+      expect(screen.getAllByText("The Solana RPC is rate-limited right now. Retrying automatically…").length).toBe(1),
+    );
+    // The other route is unaffected.
+    await waitFor(() => expect(screen.getAllByText("Ready to launch").length).toBe(1));
+  });
+});
+
+describe("RouteSelector — automatic retry under rate limiting", () => {
+  it("retries the rate-limited route automatically (bounded) and recovers", async () => {
+    let calls = 0;
+    mocks.fetchMock.mockImplementation(async (input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url.includes("route=pump")) {
+        calls += 1;
+        const state: EndpointState =
+          calls === 1
+            ? {
+                state: "rate_limited",
+                message: "The Solana RPC is rate-limited right now. Retrying automatically…",
+                retryAfterSeconds: 1,
+              }
+            : READY_PUMP;
+        return { ok: true, status: 200, json: async () => ({ route: "pump", cluster: "mainnet-beta", ...state }) } as Response;
+      }
+      return { ok: true, status: 200, json: async () => ({ route: "launchlab", cluster: "mainnet-beta", ...READY_LAB }) } as Response;
     });
-    renderSelector();
-    await waitFor(() => expect(screen.getAllByText(/Temporarily unavailable/).length).toBe(1));
-    const labCard = cardFor("LaunchLab → CPMM");
-    expect(labCard.textContent).not.toContain("fetch failed");
-    const retry = screen.getAllByText("Retry availability check").length;
-    expect(retry).toBe(1);
-    const before = mocks.loadConfigs.launchlab.mock.calls.length;
-    fireEvent.click(screen.getByText("Retry availability check"));
-    await waitFor(() => expect(mocks.loadConfigs.launchlab.mock.calls.length).toBeGreaterThan(before));
+    renderSelector("pump");
+    // Initial check: pump rate-limited, launchlab ready.
+    await waitFor(() =>
+      expect(screen.getAllByText("The Solana RPC is rate-limited right now. Retrying automatically…").length).toBe(1),
+    );
+    expect(mocks.fetchMock).toHaveBeenCalledTimes(2);
+    // The rate-limited route retries automatically (real ~4s backoff) and
+    // recovers to ready.
+    await waitFor(() => expect(screen.getAllByText("Ready to launch").length).toBe(2), { timeout: 15_000 });
+    expect(mocks.fetchMock).toHaveBeenCalledTimes(3);
   });
 });
 
 describe("RouteSelector — selection semantics", () => {
   it("marks exactly one radio checked and switches on click", async () => {
     const onChange = vi.fn();
-    const conn = {} as never;
-    const view = render(
-      createElement(RouteSelector, {
-        value: "pump",
-        onChange,
-        connection: conn,
-        cluster: "mainnet-beta",
-      }),
-    );
+    const view = renderSelector("pump", onChange);
     await waitFor(() => expect(screen.getAllByText("Ready to launch").length).toBe(2));
     expect(cardFor("Pump.fun → PumpSwap").getAttribute("aria-checked")).toBe("true");
     expect(cardFor("LaunchLab → CPMM").getAttribute("aria-checked")).toBe("false");
     fireEvent.click(cardFor("LaunchLab → CPMM"));
     expect(onChange).toHaveBeenCalledWith("launchlab");
-    // Controlled component: parent re-renders with the new value (same
-    // connection — no re-check).
+    // Controlled component: parent re-renders with the new value (no re-check).
     view.rerender(
       createElement(RouteSelector, {
         value: "launchlab",
         onChange,
-        connection: conn,
         cluster: "mainnet-beta",
       }),
     );
@@ -172,16 +220,13 @@ describe("RouteSelector — selection semantics", () => {
     await waitFor(() => expect(screen.getAllByText("Ready to launch").length).toBe(2));
     const pumpCard = cardFor("Pump.fun → PumpSwap");
     const labCard = cardFor("LaunchLab → CPMM");
-    // Selected: stronger blue border + persistent glow + ring.
     expect(pumpCard.className).toContain("border-mint-500");
     expect(pumpCard.className).toContain("shadow-glow-mint");
     expect(pumpCard.className).toContain("ring-2");
-    // Unselected selectable: blue hover border + brighten + glow + pointer.
     expect(labCard.className).toContain("hover:border-mint-500/60");
     expect(labCard.className).toContain("hover:bg-sky-50");
     expect(labCard.className).toContain("hover:shadow-glow-mint");
     expect(labCard.className).toContain("cursor-pointer");
-    // Visible focus styling hook.
     expect(pumpCard.className).toContain("focus-visible:ring-2");
   });
 

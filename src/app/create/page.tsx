@@ -276,7 +276,6 @@ export default function CreateTokenPage() {
           <RouteSelector
             value={form.route}
             onChange={(r) => set("route", r)}
-            connection={connection}
             cluster={network.cluster}
             onAvailabilityChange={setRouteAvailability}
           />

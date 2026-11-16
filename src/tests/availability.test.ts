@@ -30,13 +30,30 @@ describe("classifyAvailabilityError", () => {
     for (const msg of [
       "TypeError: fetch failed",
       "Failed to fetch",
-      "429 Too Many Requests",
-      "RPC circuit open — provider repeatedly rate-limiting or failing.",
       "connect ECONNREFUSED 127.0.0.1:3300",
     ]) {
       const out = classifyAvailabilityError(new Error(msg));
       expect(out.state).toBe("retry");
     }
+  });
+
+  it("maps provider rate limiting to the distinct rate_limited state", () => {
+    for (const msg of [
+      "429 Too Many Requests",
+      "RPC circuit open — provider repeatedly rate-limiting or failing.",
+      "Your app has exceeded its compute units per second capacity",
+    ]) {
+      const out = classifyAvailabilityError(new Error(msg));
+      expect(out.state).toBe("rate_limited");
+      expect(out.message).toBe(AVAILABILITY_COPY.rate_limited);
+    }
+  });
+
+  it("classifies through the cause chain (gateway errors wrapped by adapters)", () => {
+    const gatewayErr = new Error("RPC circuit open — provider repeatedly rate-limiting or failing.");
+    const wrapped = new TwinpadError("RPC_ERROR", "Could not reach the Solana RPC.", gatewayErr);
+    const out = classifyAvailabilityError(wrapped);
+    expect(out.state).toBe("rate_limited");
   });
 
   it("fails safe on unknown error shapes (retry, never unsupported)", () => {

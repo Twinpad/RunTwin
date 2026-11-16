@@ -473,15 +473,15 @@ export async function gatewayRpc<T>(
   }
 }
 
-/** Whether the gateway is currently admitting requests (circuit not open). */
-export function gatewayHealthy(): boolean {
-  const s = gw();
+/** Whether the gateway pool is currently admitting requests (circuit not open). */
+export function gatewayHealthy(pool: string = "primary"): boolean {
+  const s = gw(pool);
   return circuitState(s, Date.now()) !== "open";
 }
 
-/** Seconds until the gateway expects to admit requests again (Retry-After). */
-export function gatewayRetryAfterSeconds(): number {
-  const s = gw();
+/** Seconds until the gateway pool expects to admit requests again (Retry-After). */
+export function gatewayRetryAfterSeconds(pool: string = "primary"): number {
+  const s = gw(pool);
   const now = Date.now();
   if (s.circuitOpenUntil > now) return Math.ceil((s.circuitOpenUntil - now) / 1000);
   return 1;

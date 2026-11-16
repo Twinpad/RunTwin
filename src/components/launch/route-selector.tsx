@@ -1,14 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { Connection } from "@solana/web3.js";
-import { getAdapter, ROUTES } from "@/lib/adapters";
+import { ROUTES } from "@/lib/adapters";
 import type { LaunchRoute } from "@/lib/adapters/types";
 import {
   AVAILABILITY_COPY,
   classifyAvailabilityError,
   loadingAvailability,
-  readyAvailability,
   type RouteAvailability,
 } from "@/lib/adapters/availability";
 import { Badge, Spinner } from "@/components/ui/primitives";
@@ -42,61 +40,101 @@ function MiniPortalArt({ route }: { route: LaunchRoute }) {
  * Launch-method selection — two selectable route cards.
  *
  * Each card is a real WAI-ARIA radio (roving tabindex, Enter/Space/arrows)
- * covering its whole surface. Availability is checked live per route and
- * shown honestly: loading → ready → retry (transient RPC trouble) /
- * unsupported (route genuinely not deployed on this cluster). A route that
- * is not ready cannot be selected, raw errors are never rendered, and a
- * Retry action re-runs the check.
+ * covering its whole surface. Availability is checked SERVER-SIDE
+ * (GET /api/launch/availability?route=…): the endpoint runs each route
+ * adapter's real mainnet readiness path on a dedicated gateway pool, so the
+ * two checks stay independent, never queue behind background provider
+ * traffic, and keep working while the primary RPC pool's circuit breaker is
+ * open. States are shown honestly: loading → ready / rate_limited (the
+ * provider is throttling us — retries automatically) / retry (transient
+ * transport trouble — manual retry) / unsupported (route genuinely not
+ * deployed on this cluster). A route that is not ready cannot be selected,
+ * raw errors are never rendered, and the Continue gate downstream stays
+ * honest.
  */
 export function RouteSelector({
   value,
   onChange,
-  connection,
   cluster,
   onAvailabilityChange,
 }: {
   value: LaunchRoute;
   onChange: (r: LaunchRoute) => void;
-  connection: Connection;
   cluster: string;
   /** Optional: report the live availability map (for Continue gating). */
   onAvailabilityChange?: (map: AvailabilityMap) => void;
 }) {
   const [availability, setAvailability] = useState<AvailabilityMap>({});
   const runIdRef = useRef(0);
+  const autoRetryRef = useRef<
+    Partial<Record<LaunchRoute, { attempts: number; timer?: ReturnType<typeof setTimeout> }>>
+  >({});
   const cardRefs = useRef<Partial<Record<LaunchRoute, HTMLDivElement | null>>>({});
 
+  const clearAutoRetry = (id: LaunchRoute) => {
+    const entry = autoRetryRef.current[id];
+    if (entry?.timer) clearTimeout(entry.timer);
+    delete autoRetryRef.current[id];
+  };
+
+  /**
+   * One route's check — fully independent of the other route. Runs against
+   * the server-side availability endpoint (real adapter mainnet readiness on
+   * a dedicated gateway pool).
+   */
+  async function checkRoute(id: LaunchRoute, opts?: { auto?: boolean }) {
+    try {
+      const res = await fetch(`/api/launch/availability?route=${id}`, {
+        signal: AbortSignal.timeout(45_000),
+      });
+      const data = (await res.json()) as RouteAvailability & {
+        retryAfterSeconds?: number;
+      };
+      const payload: RouteAvailability = {
+        state: data.state,
+        message: data.message,
+        details: data.details,
+        retryAfterSeconds: data.retryAfterSeconds,
+      };
+      setAvailability((prev) => ({ ...prev, [id]: payload }));
+      if (payload.state === "rate_limited") {
+        // Provider throttling is transient: retry this route automatically
+        // (bounded — after N attempts the manual Retry button takes over).
+        const attempts = (autoRetryRef.current[id]?.attempts ?? 0) + 1;
+        if (attempts <= 4) {
+          const delay = Math.min(20_000, Math.max(4_000, (payload.retryAfterSeconds ?? 5) * 1000));
+          const timer = setTimeout(() => {
+            void checkRoute(id, { auto: true });
+          }, delay);
+          autoRetryRef.current[id] = { attempts, timer };
+          return;
+        }
+        autoRetryRef.current[id] = { attempts, timer: undefined };
+        return;
+      }
+      clearAutoRetry(id);
+    } catch (err) {
+      // The endpoint itself was unreachable — honest retry state; the manual
+      // Retry button re-runs the check.
+      console.error(`[route-selector] ${id} availability check failed:`, err);
+      setAvailability((prev) => ({ ...prev, [id]: classifyAvailabilityError(err) }));
+      clearAutoRetry(id);
+    }
+  }
+
+  // Full check: both routes in parallel, each independent.
   const check = useCallback(async () => {
     const runId = ++runIdRef.current;
     setAvailability(Object.fromEntries(ROUTES.map((r) => [r.id, loadingAvailability()])));
-    const out: AvailabilityMap = {};
-    await Promise.all(
-      ROUTES.map(async (route) => {
-        try {
-          const adapter = await getAdapter(route.id);
-          const config = await adapter.loadConfig(connection, cluster as never);
-          out[route.id] = {
-            ...readyAvailability(),
-            details: [
-              ...adapter.describePrograms(cluster as never).map((p) => `${p.name}: ${p.address}`),
-              ...Object.entries(config.details)
-                .filter(([, v]) => v !== null && v !== undefined)
-                .map(([k, v]) => `${k}: ${String(v)}`),
-            ],
-          };
-        } catch (err) {
-          // Detailed diagnostics stay in the console — never rendered in the
-          // card. The user sees only the honest short message.
-          console.error(`[route-selector] ${route.id} availability check failed:`, err);
-          out[route.id] = classifyAvailabilityError(err);
-        }
-      }),
-    );
-    if (runIdRef.current === runId) setAvailability(out);
-  }, [connection, cluster]);
+    for (const r of ROUTES) clearAutoRetry(r.id);
+    await Promise.all(ROUTES.map((route) => checkRoute(route.id)));
+  }, []);
 
   useEffect(() => {
     void check();
+    return () => {
+      for (const r of ROUTES) clearAutoRetry(r.id);
+    };
   }, [check]);
 
   useEffect(() => {
@@ -156,7 +194,7 @@ export function RouteSelector({
               if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
                 e.preventDefault();
                 if (state === "ready") select(route.id);
-                else if (state === "retry") void check();
+                else if (state === "retry" || state === "rate_limited") void checkRoute(route.id);
                 return;
               }
               if (
@@ -222,13 +260,34 @@ export function RouteSelector({
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      void check();
+                      void checkRoute(route.id);
                     }}
                     className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-night-700 px-2.5 py-1 text-2xs font-medium text-mint-700 transition-colors duration-200 hover:border-mint-500/60 hover:bg-sky-50"
                   >
                     <Icon name="refresh" size={12} />
                     Retry availability check
                   </button>
+                </>
+              )}
+              {state === "rate_limited" && (
+                <>
+                  <p className="flex items-center gap-1.5 text-xs font-medium text-warn">
+                    <Icon name="clock" size={13} />
+                    {AVAILABILITY_COPY.rate_limited}
+                  </p>
+                  {(autoRetryRef.current[route.id]?.attempts ?? 0) >= 4 && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        void checkRoute(route.id);
+                      }}
+                      className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-night-700 px-2.5 py-1 text-2xs font-medium text-mint-700 transition-colors duration-200 hover:border-mint-500/60 hover:bg-sky-50"
+                    >
+                      <Icon name="refresh" size={12} />
+                      Retry availability check
+                    </button>
+                  )}
                 </>
               )}
               {state === "unsupported" && (
