@@ -20,7 +20,7 @@ import { shortAddress } from "@/lib/format";
  */
 const SOCIAL_LINKS = [
   {
-    href: "https://x.com/RunOnTwin",
+    href: "https://x.com/Twinpadlabs",
     label: "TwinPad on X",
     tooltip: "Follow TwinPad on X",
     icon: "x" as const,

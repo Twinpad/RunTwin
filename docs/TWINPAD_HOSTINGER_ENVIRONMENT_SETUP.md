@@ -237,8 +237,8 @@ only from a local/CI step or on a VPS over SSH.
 ### Post-deploy verification checklist
 
 - [ ] `https://your-domain/` returns 200 and the homepage renders.
-- [ ] Header shows **GitHub → https://github.com/Usetwinpad** and
-      **X → https://x.com/TwinPadFun** (both open in a new tab).
+- [ ] Header shows **GitHub → https://github.com/Twinpad** and
+      **X → https://x.com/Twinpadlabs** (both open in a new tab).
 - [ ] Share/OG preview resolves against your domain (`NEXT_PUBLIC_APP_URL`).
 - [ ] The site identifies as **Mainnet** (network indicator).
 - [ ] `GET /api/rpc/stats` returns `"healthy": true` — proves

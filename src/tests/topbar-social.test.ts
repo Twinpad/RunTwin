@@ -2,7 +2,7 @@
 /**
  * Topbar social-links regression tests.
  *
- * TwinPad's OFFICIAL accounts are https://x.com/RunOnTwin and
+ * TwinPad's OFFICIAL accounts are https://x.com/Twinpadlabs and
  * https://github.com/Twinpad (both verified by the project owner). These
  * tests pin that behavior: the header renders exactly those two links —
  * new-tab + noreferrer — and never any legacy-brand or placeholder social
@@ -57,7 +57,7 @@ describe("topbar social links (official X and GitHub)", () => {
     renderTopbar();
     const x = screen.getByRole("link", { name: "TwinPad on X" });
     const gh = screen.getByRole("link", { name: "TwinPad on GitHub" });
-    expect(x.getAttribute("href")).toBe("https://x.com/RunOnTwin");
+    expect(x.getAttribute("href")).toBe("https://x.com/Twinpadlabs");
     expect(gh.getAttribute("href")).toBe("https://github.com/Twinpad");
     expect(x.getAttribute("target")).toBe("_blank");
     expect(gh.getAttribute("target")).toBe("_blank");
@@ -73,7 +73,7 @@ describe("topbar social links (official X and GitHub)", () => {
       .map((a) => a.getAttribute("href") ?? "")
       .filter((h) => /^https?:\/\//.test(h));
     const official = new Set([
-      "https://x.com/RunOnTwin",
+      "https://x.com/Twinpadlabs",
       "https://github.com/Twinpad",
     ]);
     for (const href of hrefs) {

@@ -364,7 +364,7 @@ function MobileDock() {
                         <ul className="grid grid-cols-2 gap-2">
                           <li>
                             <a
-                              href="https://x.com/RunOnTwin"
+                              href="https://x.com/Twinpadlabs"
                               target="_blank"
                               rel="noopener noreferrer"
                               aria-label="TwinPad on X"
